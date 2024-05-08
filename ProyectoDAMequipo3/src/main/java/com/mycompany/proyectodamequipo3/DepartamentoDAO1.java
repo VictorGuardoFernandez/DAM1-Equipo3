@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @author DAM128
  */
-public class ProfesorDAO implements Repositorio<Profesor> {
+public class DepartamentoDAO1 implements Repositorio<Departamento> {
 
     
     private Connection getConnection() {
@@ -25,11 +25,11 @@ public class ProfesorDAO implements Repositorio<Profesor> {
     
     @Override
     public List listar() {
-        List<Profesor> profesores = new ArrayList<>();
-         try ( Statement stmt = getConnection().createStatement();  ResultSet rs = stmt.executeQuery("SELECT  FROM profesores");) {
+        List<Departamento> productos = new ArrayList<>();
+         try ( Statement stmt = getConnection().createStatement();  ResultSet rs = stmt.executeQuery("SELECT id,nombre,cantidad FROM productos");) {
             while (rs.next()) {
-                Profesor profesor = crearProfesor(rs);
-                if (!profesores.add(profesor)) {
+                Departamento departamento = crearDepartamento(rs);
+                if (!productos.add(departamento)) {
                     throw new Exception("error no se ha insertado el objeto en la colección");
                 }
             } 
@@ -41,18 +41,18 @@ public class ProfesorDAO implements Repositorio<Profesor> {
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
-        return profesores;
+        return productos;
     }
 
     @Override
-    public Profesor porId(int id) {
-         Profesor profesor = null;
-        String sql = "SELECT id,nombre,apellidos,dni,correo,departamento FROM profesores WHERE id=?";
+    public Departamento porId(int id) {
+         Departamento departamento = null;
+        String sql = "SELECT id,nombre,cantidad FROM productos WHERE id=?";
         try ( PreparedStatement stmt = getConnection().prepareStatement(sql);) {
             stmt.setInt(1, id);
             try ( ResultSet rs = stmt.executeQuery();) {
                 if (rs.next()) {
-                    profesor = crearProfesor(rs);
+                    departamento = crearDepartamento(rs);
                 }
             }
 
@@ -60,22 +60,20 @@ public class ProfesorDAO implements Repositorio<Profesor> {
             // errores
             System.out.println("SQLException: " + ex.getMessage());
         }
-        return profesor;
+        return departamento;
     }
 
     @Override
-    public void guardar(Profesor profesor) {
+    public void guardar(Departamento departamento) {
         String sql = null;
-        sql = "INSERT INTO profesores(nombre,apellidos,dni,correo,departamento) VALUES (?,?,?,?,?)";
+        sql = "INSERT INTO productos(nombre,apellidos,dni,correo,departamento) VALUES (?,?,?,?,?)";
        
         try ( PreparedStatement stmt = getConnection().prepareStatement(sql);) {
 
             
-            stmt.setString(1, profesor.getNombre());
-            stmt.setString(2, profesor.getApellidos());
-            stmt.setString(3, profesor.getDni());
-            stmt.setString(4, profesor.getCorreo());
-            stmt.setInt(5, profesor.getDepartamento());
+            stmt.setString(1, departamento.getCod_departamento());
+            stmt.setString(2, departamento.getNom_departamento());
+            stmt.setInt(3, departamento.getIdjefe());
             int salida = stmt.executeUpdate();
             if (salida != 1) {
                 throw new Exception(" No se ha insertado/modificado un solo registro");
@@ -105,7 +103,7 @@ public class ProfesorDAO implements Repositorio<Profesor> {
             System.out.println(ex.getMessage());
         }
     }
-    private Profesor crearProfesor(final ResultSet rs) throws SQLException {
-        return new Profesor( rs.getString("nombre"),rs.getString("apellidos"),rs.getString("dni"),rs.getString("correo"),rs.getInt("departamento"));
+    private Departamento crearDepartamento(final ResultSet rs) throws SQLException {
+        return new Departamento();
     }
 }

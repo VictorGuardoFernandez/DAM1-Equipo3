@@ -16,9 +16,10 @@ public class Solicitudes {
     private boolean previsto,medio_transporte,alojamiento;
     private LocalDate fechaini,fechafn;
     private LocalTime horaini,horafn;
-    private int departamento,profesor_solicitante;
+    private int departamento,profesor_solicitante,id;
 
-    public Solicitudes(String titulo_actividad, String tipo_actividad, String numeroalumnos, String comentarios, boolean previsto, boolean medio_transporte, boolean alojamiento, LocalDate fechaini, LocalDate fechafn, LocalTime horaini, LocalTime horafn, int departamento, int profesor_solicitante) {
+    public Solicitudes(int id,String titulo_actividad, String tipo_actividad, String numeroalumnos, String comentarios, boolean previsto, boolean medio_transporte, boolean alojamiento, LocalDate fechaini, LocalDate fechafn, LocalTime horaini, LocalTime horafn, int departamento, int profesor_solicitante) {
+        this.id=id;
         this.titulo_actividad = titulo_actividad;
         this.tipo_actividad = tipo_actividad;
         this.numeroalumnos = numeroalumnos;

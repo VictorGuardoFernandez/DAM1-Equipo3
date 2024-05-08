@@ -9,23 +9,24 @@ package com.mycompany.proyectodamequipo3;
  * @author DAM128
  */
 public class Grupos {
-    private int idcurso,num_alumnos;
+    private int num_alumnos,id;
     private boolean activo;
     private String codgrupo;
+    private Curso curso;
 
-    public Grupos(int idcurso, int num_alumnos, boolean activo, String codgrupo) {
-        this.idcurso = idcurso;
+    public Grupos(Curso idcurso, int num_alumnos, boolean activo, String codgrupo) {
+        this.curso = idcurso;
         this.num_alumnos = num_alumnos;
         this.activo = activo;
         this.codgrupo = codgrupo;
     }
 
-    public int getIdcurso() {
-        return idcurso;
+    public Curso getCurso() {
+        return curso;
     }
 
-    public void setIdcurso(int idcurso) {
-        this.idcurso = idcurso;
+    public void setCurso(Curso curso) {
+        this.curso = curso;
     }
 
     public int getNum_alumnos() {
@@ -54,7 +55,8 @@ public class Grupos {
 
     @Override
     public String toString() {
-        return "Grupos{" + "idcurso=" + idcurso + ", num_alumnos=" + num_alumnos + ", activo=" + activo + ", codgrupo=" + codgrupo + '}';
+        return "Grupos{" + "num_alumnos=" + num_alumnos + ", id=" + id + ", activo=" + activo + ", codgrupo=" + codgrupo + ", curso=" + curso + '}';
     }
+   
     
 }

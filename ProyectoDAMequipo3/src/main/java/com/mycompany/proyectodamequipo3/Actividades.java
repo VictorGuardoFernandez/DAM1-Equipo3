@@ -16,7 +16,7 @@ public class Actividades {
     private boolean previsto,medio_transporte,alojamiento;
     private LocalDate fechaini,fechafn;
     private LocalTime horaini,horafn;
-    private int departamento;
+    private int departamento,id;
 
     public Actividades(String titulo_actividad, String tipo_actividad, String numeroalumnos, String comentarios, boolean previsto, boolean medio_transporte, boolean alojamiento, LocalDate fechaini, LocalDate fechafn, LocalTime horaini, LocalTime horafn, int departamento) {
         this.titulo_actividad = titulo_actividad;

@@ -10,6 +10,7 @@ package com.mycompany.proyectodamequipo3;
  * @author DAM128
  */
 public class Curso {
+    private int id;
     private String codcurso,desc_curso,etapa;
     private boolean activo;
 

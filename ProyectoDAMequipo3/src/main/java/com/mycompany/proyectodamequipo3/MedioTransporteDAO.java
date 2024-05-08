@@ -3,7 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.mycompany.proyectodamequipo3;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,29 +10,26 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-
 /**
  *
  * @author DAM128
  */
-public class ProfesorDAO implements Repositorio<Profesor> {
+public class MedioTransporteDAO implements Repositorio<MedioTransporte> {
 
-    
     private Connection getConnection() {
         return AccesoBaseDatos.getInstance().getConn();
     }
-    
+
     @Override
-    public List listar() {
-        List<Profesor> profesores = new ArrayList<>();
-         try ( Statement stmt = getConnection().createStatement();  ResultSet rs = stmt.executeQuery("SELECT  FROM profesores");) {
+    public List<MedioTransporte> listar() {
+        List<MedioTransporte> mediosTransporte = new ArrayList<>();
+        try (Statement stmt = getConnection().createStatement(); ResultSet rs = stmt.executeQuery("SELECT id, nombre, apellidos FROM medios_transporte");) {
             while (rs.next()) {
-                Profesor profesor = crearProfesor(rs);
-                if (!profesores.add(profesor)) {
+                MedioTransporte medioTransporte = crearMedioTransporte(rs);
+                if (!mediosTransporte.add(medioTransporte)) {
                     throw new Exception("error no se ha insertado el objeto en la colección");
                 }
-            } 
-            
+            }
 
         } catch (SQLException ex) {
             // errores
@@ -41,18 +37,18 @@ public class ProfesorDAO implements Repositorio<Profesor> {
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
-        return profesores;
+        return mediosTransporte;
     }
 
     @Override
-    public Profesor porId(int id) {
-         Profesor profesor = null;
-        String sql = "SELECT id,nombre,apellidos,dni,correo,departamento FROM profesores WHERE id=?";
-        try ( PreparedStatement stmt = getConnection().prepareStatement(sql);) {
+    public MedioTransporte porId(int id) {
+        MedioTransporte medioTransporte = null;
+        String sql = "SELECT id, nombre, apellidos FROM medios_transporte WHERE id=?";
+        try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
             stmt.setInt(1, id);
-            try ( ResultSet rs = stmt.executeQuery();) {
+            try (ResultSet rs = stmt.executeQuery();) {
                 if (rs.next()) {
-                    profesor = crearProfesor(rs);
+                    medioTransporte = crearMedioTransporte(rs);
                 }
             }
 
@@ -60,22 +56,20 @@ public class ProfesorDAO implements Repositorio<Profesor> {
             // errores
             System.out.println("SQLException: " + ex.getMessage());
         }
-        return profesor;
+        return medioTransporte;
     }
 
     @Override
-    public void guardar(Profesor profesor) {
-        String sql = null;
-        sql = "INSERT INTO profesores(nombre,apellidos,dni,correo,departamento) VALUES (?,?,?,?,?)";
-       
-        try ( PreparedStatement stmt = getConnection().prepareStatement(sql);) {
+    public void guardar(MedioTransporte medioTransporte) {
+        String sql = "INSERT INTO medios_transporte(nombre, apellidos, dni, correo, departamento) VALUES (?,?,?,?,?)";
 
-            
-            stmt.setString(1, profesor.getNombre());
-            stmt.setString(2, profesor.getApellidos());
-            stmt.setString(3, profesor.getDni());
-            stmt.setString(4, profesor.getCorreo());
-            stmt.setInt(5, profesor.getDepartamento());
+        try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
+
+            stmt.setString(1, medioTransporte.getNombre());
+            stmt.setString(2, medioTransporte.getApellidos());
+            stmt.setString(3, medioTransporte.getDni());
+            stmt.setString(4, medioTransporte.getCorreo());
+            stmt.setInt(5, medioTransporte.getDepartamento());
             int salida = stmt.executeUpdate();
             if (salida != 1) {
                 throw new Exception(" No se ha insertado/modificado un solo registro");
@@ -91,8 +85,8 @@ public class ProfesorDAO implements Repositorio<Profesor> {
 
     @Override
     public void eliminar(int id) {
-        String sql="DELETE FROM profesores WHERE id=?";
-        try ( PreparedStatement stmt = getConnection().prepareStatement(sql);) {
+        String sql = "DELETE FROM medios_transporte WHERE id=?";
+        try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
             stmt.setInt(1, id);
             int salida = stmt.executeUpdate();
             if (salida != 1) {
@@ -105,7 +99,8 @@ public class ProfesorDAO implements Repositorio<Profesor> {
             System.out.println(ex.getMessage());
         }
     }
-    private Profesor crearProfesor(final ResultSet rs) throws SQLException {
-        return new Profesor( rs.getString("nombre"),rs.getString("apellidos"),rs.getString("dni"),rs.getString("correo"),rs.getInt("departamento"));
+
+    private MedioTransporte crearMedioTransporte(final ResultSet rs) throws SQLException {
+        return new MedioTransporte(rs.getString("nombre"), rs.getString("apellidos"), rs.getString("dni"), rs.getString("correo"), rs.getInt("departamento"));
     }
 }
