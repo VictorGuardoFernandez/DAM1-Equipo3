@@ -527,7 +527,34 @@ public class Menu extends javax.swing.JPanel {
     private void ConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConfirmarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_ConfirmarActionPerformed
-
+public void mostrar(String tabla){
+String sql="Select * from "+tabla;
+java.sql.Statement st;
+Connection conexion= AccesoBaseDatos.getInstance().getConn();
+    System.out.println(sql);
+    DefaultTableModel model = new DefaultTableModel();
+    model.addColumn("Id");
+    model.addColumn("Nombre");
+    model.addColumn("Apelllidos");
+    model.addColumn("DNI");
+    model.addColumn("Correo");
+    model.addColumn("Departamento");
+    jTable1.setModel(model);
+    
+    String [] datos = new String [6];
+    try{
+        st = conexion.createStatement();
+        ResultSet rs = st.executeQuery(sql);
+        while(rs.next())
+        {
+            datos[0] = rs.getString(1);
+            datos[1]=rs.getString(2);
+            datos[2]=rs.getString(3);
+            datos[3]=rs.getString(4);
+            datos[4]=rs.getString(5);
+            datos[5]=rs.getString(6);
+            model.addRow(datos);
+        }     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton Confirmar;
