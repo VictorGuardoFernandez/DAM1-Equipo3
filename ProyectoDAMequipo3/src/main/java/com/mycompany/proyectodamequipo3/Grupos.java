@@ -21,6 +21,10 @@ public class Grupos {
         this.codgrupo = codgrupo;
     }
 
+    public int getId() {
+        return id;
+    }
+
     public Curso getCurso() {
         return curso;
     }

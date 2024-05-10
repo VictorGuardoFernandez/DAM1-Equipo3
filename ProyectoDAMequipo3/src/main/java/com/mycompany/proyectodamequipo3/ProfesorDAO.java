@@ -47,7 +47,7 @@ public class ProfesorDAO implements Repositorio<Profesor> {
     @Override
     public Profesor porId(int id) {
          Profesor profesor = null;
-        String sql = "SELECT id,nombre,apellidos,dni,correo,departamento FROM profesores WHERE id=?";
+        String sql = "SELECT idprofesores,nombre,apellidos,dni,correo,departamento FROM profesores WHERE id=?";
         try ( PreparedStatement stmt = getConnection().prepareStatement(sql);) {
             stmt.setInt(1, id);
             try ( ResultSet rs = stmt.executeQuery();) {
@@ -66,7 +66,7 @@ public class ProfesorDAO implements Repositorio<Profesor> {
     @Override
     public void guardar(Profesor profesor) {
         String sql = null;
-        sql = "INSERT INTO profesores(nombre,apellidos,dni,correo,departamento) VALUES (?,?,?,?,?)";
+        sql = "INSERT INTO profesores(idprofesores,nombre,apellidos,dni,correo,departamento) VALUES (?,?,?,?,?)";
        
         try ( PreparedStatement stmt = getConnection().prepareStatement(sql);) {
 
@@ -75,7 +75,7 @@ public class ProfesorDAO implements Repositorio<Profesor> {
             stmt.setString(2, profesor.getApellidos());
             stmt.setString(3, profesor.getDni());
             stmt.setString(4, profesor.getCorreo());
-            stmt.setInt(5, profesor.getDepartamento());
+            stmt.setInt(5, profesor.getDepartamento().getId());
             int salida = stmt.executeUpdate();
             if (salida != 1) {
                 throw new Exception(" No se ha insertado/modificado un solo registro");
@@ -105,7 +105,9 @@ public class ProfesorDAO implements Repositorio<Profesor> {
             System.out.println(ex.getMessage());
         }
     }
+    
     private Profesor crearProfesor(final ResultSet rs) throws SQLException {
-        return new Profesor( rs.getString("nombre"),rs.getString("apellidos"),rs.getString("dni"),rs.getString("correo"),rs.getInt("departamento"));
+        DepartamentoDAO d=new DepartamentoDAO();
+        return new Profesor(rs.getInt("idprofesores"),rs.getString("nombre"),rs.getString("apellidos"),rs.getString("dni"),rs.getString("correo"),DepartamentoDAO1.);
     }
 }

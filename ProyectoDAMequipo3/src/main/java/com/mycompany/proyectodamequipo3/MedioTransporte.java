@@ -17,6 +17,14 @@ public class MedioTransporte {
         this.id = id;
         this.tipo = tipo;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public tipostransporte getTipo() {
+        return tipo;
+    }
     
 }
 

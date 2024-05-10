@@ -47,7 +47,7 @@ public class CursosDAO implements Repositorio<Curso> {
     @Override
     public Curso porId(int id) {
         Curso curso = null;
-        String sql = "SELECT id,nombre,cantidad FROM cursos WHERE id=?";
+        String sql = "SELECT idcurso,codcurso,desc_curso,etapa,activo FROM cursos WHERE id=?";
         try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery();) {
@@ -69,12 +69,15 @@ public class CursosDAO implements Repositorio<Curso> {
     public void guardar(Curso curso) {
         String sql = null;
        
-            sql = "INSERT INTO cursos(nombre,cantidad) VALUES (?,?)";
+            sql = "INSERT INTO cursos(idcurso,codcurso,desc_curso,etapa,activo) VALUES (?,?,?,?,?)";
        
         try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
 
-            stmt.setString(1, curso.getNombre());
-            stmt.setInt(2, curso.getCantidad());
+            stmt.setInt(1, curso.getId());
+            stmt.setString(2, curso.getCodcurso());
+            stmt.setString(3, curso.getDesc_curso());
+            stmt.setString(4, curso.getEtapa());
+            stmt.setBoolean(5, curso.isActivo());
             int salida = stmt.executeUpdate();
             if (salida != 1) {
                 throw new Exception(" No se ha insertado/modificado un solo registro");
@@ -108,7 +111,7 @@ public class CursosDAO implements Repositorio<Curso> {
     }
 
     private Curso crearCurso(final ResultSet rs) throws SQLException {
-        return new Curso(rs.getInt("id"), rs.getString("nombre"), rs.getInt("cantidad"));
+        return new Curso(rs.getString("codcurso"),rs.getString("desc_curso"),rs.getString("etapa"),rs.getBoolean("activo"),rs.getInt("idcurso"));
     }
 }
 

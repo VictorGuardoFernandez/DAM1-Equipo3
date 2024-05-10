@@ -43,7 +43,7 @@ public class PerfilAccesoDAO implements Repositorio<PerfilAcceso> {
     @Override
     public PerfilAcceso porId(int id) {
         PerfilAcceso perfil = null;
-        String sql = "SELECT idprofesor,tipo,correo,password,nombre,apellidos,dni,correo FROM perfil_acceso inner join profesores on idprofesor=idprofesores WHERE idprofesor=?";
+        String sql = "SELECT idprofesor,tipo,correo,password,nombre,apellidos,dni,correo,departamento FROM perfil_acceso inner join profesores on idprofesor=idprofesores WHERE idprofesor=?";
         try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery();) {
@@ -100,6 +100,6 @@ public class PerfilAccesoDAO implements Repositorio<PerfilAcceso> {
     }
 
     private PerfilAcceso crearPerfil(final ResultSet rs) throws SQLException {
-        return new PerfilAcceso(rs.getInt,rs.getString(2),rs.getString(3),rs.getString(4));
+        return new PerfilAcceso(Profesor profesor=new Profesor(rs.getInt("idprofesor"),rs.getString("nombre"),rs.getString("apellidos"),rs.getString("dni"),rs.getString("correo"),),rs.getString("tipo"),rs.getString(3),rs.getString(4));
     }
 }

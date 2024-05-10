@@ -47,7 +47,7 @@ public class GruposDAO implements Repositorio<Grupos> {
     @Override
     public Grupos porId(int id) {
         Grupos grupo = null;
-        String sql = "SELECT id,nombre,cantidad FROM grupos WHERE id=?";
+        String sql = "SELECT idgrupo,num_alumnos,grupo.activo as activog,codgrupo,cursos.idcurso,codcurso,desc_curso,etapa,cursos.activo as activoc FROM grupos inner join cursos using(idcurso)  WHERE idgrupo=?";
         try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery();) {
@@ -68,12 +68,14 @@ public class GruposDAO implements Repositorio<Grupos> {
     @Override
     public void guardar(Grupos grupo) {
         String sql = null;
-        sql = "INSERT INTO grupos(nombre,cantidad) VALUES (?,?)";
+        sql = "INSERT INTO grupo(idgrupo,idcurso,num_alumnos,activo,codgrupo) VALUES (?,?,?,?,?)";
 
         try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
-
-            stmt.setString(1, grupo.getNombre());
-            stmt.setInt(2, grupo.getCantidad());
+            stmt.setInt(1, grupo.getId());
+            stmt.setInt(2, grupo.getCurso().getId());
+            stmt.setInt(3, grupo.getNum_alumnos());
+            stmt.setBoolean(4, grupo.isActivo());
+            stmt.setString(5, grupo.getCodgrupo());
             int salida = stmt.executeUpdate();
             if (salida != 1) {
                 throw new Exception(" No se ha insertado/modificado un solo registro");
@@ -107,6 +109,7 @@ public class GruposDAO implements Repositorio<Grupos> {
     }
 
     private Grupos crearGrupo(final ResultSet rs) throws SQLException {
-        return new Grupos(rs.getInt("id"), rs.getString("nombre"), rs.getInt("cantidad"));
+        Curso curso=new Curso(rs.getString("codcurso"),rs.getString("desc_curso"),rs.getString("etapa"),rs.getBoolean("activoc"),rs.getInt("idcurso"));
+        return new Grupos(curso,rs.getInt("num_alumnos"),rs.getBoolean("activog"),rs.getString("codgrupo"));
     }
 }

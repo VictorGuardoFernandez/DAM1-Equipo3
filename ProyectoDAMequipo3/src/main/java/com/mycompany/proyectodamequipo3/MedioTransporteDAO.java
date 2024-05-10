@@ -43,7 +43,7 @@ public class MedioTransporteDAO implements Repositorio<MedioTransporte> {
     @Override
     public MedioTransporte porId(int id) {
         MedioTransporte medioTransporte = null;
-        String sql = "SELECT id, nombre, apellidos FROM medios_transporte WHERE id=?";
+        String sql = "SELECT id,tipo FROM medios_transporte WHERE id=?";
         try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery();) {
@@ -61,15 +61,13 @@ public class MedioTransporteDAO implements Repositorio<MedioTransporte> {
 
     @Override
     public void guardar(MedioTransporte medioTransporte) {
-        String sql = "INSERT INTO medios_transporte(nombre, apellidos, dni, correo, departamento) VALUES (?,?,?,?,?)";
+        String sql = "INSERT INTO medios_transporte(id,tipo) VALUES (?,?)";
 
         try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
 
-            stmt.setString(1, medioTransporte.getNombre());
-            stmt.setString(2, medioTransporte.getApellidos());
-            stmt.setString(3, medioTransporte.getDni());
-            stmt.setString(4, medioTransporte.getCorreo());
-            stmt.setInt(5, medioTransporte.getDepartamento());
+            stmt.setInt(1, medioTransporte.getId());
+            stmt.setString(2, medioTransporte.getTipo().name());
+            
             int salida = stmt.executeUpdate();
             if (salida != 1) {
                 throw new Exception(" No se ha insertado/modificado un solo registro");
@@ -101,6 +99,7 @@ public class MedioTransporteDAO implements Repositorio<MedioTransporte> {
     }
 
     private MedioTransporte crearMedioTransporte(final ResultSet rs) throws SQLException {
-        return new MedioTransporte(rs.getString("nombre"), rs.getString("apellidos"), rs.getString("dni"), rs.getString("correo"), rs.getInt("departamento"));
+        MedioTransporte.tipostransporte tipo=MedioTransporte.tipostransporte.valueOf(rs.getString("tipo"));
+        return new MedioTransporte(rs.getInt("id"),tipo);
     }
 }

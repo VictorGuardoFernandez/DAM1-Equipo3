@@ -26,7 +26,7 @@ public class DepartamentoDAO1 implements Repositorio<Departamento> {
     @Override
     public List listar() {
         List<Departamento> productos = new ArrayList<>();
-         try ( Statement stmt = getConnection().createStatement();  ResultSet rs = stmt.executeQuery("SELECT id,nombre,cantidad FROM productos");) {
+         try ( Statement stmt = getConnection().createStatement();  ResultSet rs = stmt.executeQuery("SELECT idDepartamentos,cod_departamento,nom_departamento,idjefe_departamento  FROM departamentos");) {
             while (rs.next()) {
                 Departamento departamento = crearDepartamento(rs);
                 if (!productos.add(departamento)) {
@@ -43,11 +43,27 @@ public class DepartamentoDAO1 implements Repositorio<Departamento> {
         }
         return productos;
     }
+    public Departamento porIdJefe(int id) {
+         Departamento departamento = null;
+        String sql = "SELECT idDepartamentos,cod_departamento,nom_departamento,idjefe_departamento,nombre,apellidos,dni,correo FROM departamentos inner join profesores on idDepartamentos=departamento WHERE idDepartamentos=? and idjefe_departamento=idprofesores";
+        try ( PreparedStatement stmt = getConnection().prepareStatement(sql);) {
+            stmt.setInt(1, id);
+            try ( ResultSet rs = stmt.executeQuery();) {
+                if (rs.next()) {
+                    departamento = crearDepartamento(rs);
+                }
+            }
 
+        } catch (SQLException ex) {
+            // errores
+            System.out.println("SQLException: " + ex.getMessage());
+        }
+        return departamento;
+    }
     @Override
     public Departamento porId(int id) {
          Departamento departamento = null;
-        String sql = "SELECT id,nombre,cantidad FROM productos WHERE id=?";
+        String sql = "SELECT idDepartamentos,cod_departamento,nom_departamento,idjefe_departamento FROM departamentos WHERE idDepartamentos=?";
         try ( PreparedStatement stmt = getConnection().prepareStatement(sql);) {
             stmt.setInt(1, id);
             try ( ResultSet rs = stmt.executeQuery();) {
@@ -66,14 +82,15 @@ public class DepartamentoDAO1 implements Repositorio<Departamento> {
     @Override
     public void guardar(Departamento departamento) {
         String sql = null;
-        sql = "INSERT INTO productos(nombre,apellidos,dni,correo,departamento) VALUES (?,?,?,?,?)";
+        sql = "INSERT INTO departamentos(idDepartamentos,cod_departamento,nom_departamento,idjefe_departamento) VALUES (?,?,?,?)";
        
         try ( PreparedStatement stmt = getConnection().prepareStatement(sql);) {
 
             
-            stmt.setString(1, departamento.getCod_departamento());
-            stmt.setString(2, departamento.getNom_departamento());
-            stmt.setInt(3, departamento.getIdjefe());
+            stmt.setInt(1, departamento.getId());
+            stmt.setString(2, departamento.getCod_departamento());
+            stmt.setString(3, departamento.getNom_departamento());
+            stmt.setInt(4, departamento.getIdjefe().getId());
             int salida = stmt.executeUpdate();
             if (salida != 1) {
                 throw new Exception(" No se ha insertado/modificado un solo registro");
@@ -104,6 +121,10 @@ public class DepartamentoDAO1 implements Repositorio<Departamento> {
         }
     }
     private Departamento crearDepartamento(final ResultSet rs) throws SQLException {
-        return new Departamento();
+        Departamento departa=new Departamento(rs.getInt("idDepartamentos"),rs.getString("cod_departamento"),rs.getString("nom_departamento"),null);
+       
+        Profesor pro=new Profesor(rs.getInt("idjefe_departamento"),rs.getString("nombre"),rs.getString("apellidos"),rs.getString("dni"),rs.getString("correo"),departa);
+        departa.setIdjefe(pro);
+        return departa;
     }
 }
