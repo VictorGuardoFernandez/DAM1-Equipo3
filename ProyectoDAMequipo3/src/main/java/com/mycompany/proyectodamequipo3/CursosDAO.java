@@ -80,7 +80,7 @@ public class CursosDAO implements Repositorio<Curso> {
             stmt.setBoolean(5, curso.isActivo());
             int salida = stmt.executeUpdate();
             if (salida != 1) {
-                throw new Exception(" No se ha insertado/modificado un solo registro");
+                throw new Exception(" No se ha insertado un solo registro");
             }
 
         } catch (SQLException ex) {
@@ -112,6 +112,32 @@ public class CursosDAO implements Repositorio<Curso> {
 
     private Curso crearCurso(final ResultSet rs) throws SQLException {
         return new Curso(rs.getString("codcurso"),rs.getString("desc_curso"),rs.getString("etapa"),rs.getBoolean("activo"),rs.getInt("idcurso"));
+    }
+
+    @Override
+    public void modificar(Curso t) {
+       String sql = null;
+       
+            
+            sql="update cursos set codcurso=?,desc_curso=?,etapa=?,activo=? where idcurso=?";
+        try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
+
+            stmt.setString(1,t.getCodcurso());
+            stmt.setString(2, t.getDesc_curso());
+            stmt.setString(3, t.getEtapa());
+            stmt.setBoolean(4, t.isActivo());
+            stmt.setInt(5,t.getId());
+            int salida = stmt.executeUpdate();
+            if (salida != 1) {
+                throw new Exception(" No se ha modificado un solo registro");
+            }
+
+        } catch (SQLException ex) {
+            // errores
+            System.out.println("SQLException: " + ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
     }
 }
 

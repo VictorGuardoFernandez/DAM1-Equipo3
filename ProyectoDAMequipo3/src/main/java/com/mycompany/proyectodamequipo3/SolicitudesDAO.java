@@ -3,11 +3,125 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.mycompany.proyectodamequipo3;
-
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import java.sql.Date;
+import java.sql.Time;
 /**
  *
  * @author DAM128
  */
-public class SolicitudesDAO {
-    
+public class SolicitudesDAO implements Repositorio<Solicitudes> {
+
+    private Connection getConnection() {
+        return AccesoBaseDatos.getInstance().getConn();
+    }
+
+    @Override
+    public List<Solicitudes> listar() {
+        List<Solicitudes> solicitudes = new ArrayList<>();
+        try (Statement stmt = getConnection().createStatement(); ResultSet rs = stmt.executeQuery("SELECT idsolicitud,tipo_actividad,titulo_actividad,departamento,previsto,medio_transporte,fechaini,horaini,fechafn,horafn,numeroalumnos,alojamiento,comentarios,estado,idprofesores_solicitante FROM solicitudes_actividades");) {
+            while (rs.next()) {
+                Solicitudes solicitud = crearSolicitud(rs);
+                if (!solicitudes.add(solicitud)) {
+                    throw new Exception("error no se ha insertado el objeto en la colección");
+                }
+            }
+
+        } catch (SQLException ex) {
+            // errores
+            System.out.println("SQLException: " + ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        return solicitudes;
+    }
+
+    @Override
+    public Solicitudes porId(int id) {
+        Solicitudes solicitud = null;
+        String sql = "SELECT idsolicitud,tipo_actividad,titulo_actividad,departamento,cod_departamento,nom_departamento,idjefe_departamento,idprofesores_solicitante,nombre,apellidos,dni,correo,previsto,medio_transporte,fechaini,horaini,fechafn,horafn,numeroalumnos,alojamiento,comentarios,estado FROM solicitudes_actividades inner join departamentos on departamento=idDepartamentos inner join profesores on idprofesores=idprofesores_solicitante WHERE idsolicitud=?";
+        try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
+            stmt.setInt(1, id);
+            try (ResultSet rs = stmt.executeQuery();) {
+                if (rs.next()) {
+                    solicitud = crearSolicitud(rs);
+                }
+            }
+
+        } catch (SQLException ex) {
+            // errores
+            System.out.println("SQLException: " + ex.getMessage());
+        }
+        return solicitud;
+    }
+
+    @Override
+    public void guardar(Solicitudes solicitud) {
+        String sql = "INSERT INTO solicitudes(idsolicitud,tipo_actividad,titulo_actividad,departamento,previsto,medio_transporte,fechaini,horaini,fechafn,horafn,numeroalumnos,alojamiento,comentarios,estado,idprofesores_solicitante) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+        try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
+
+            stmt.setInt(1, solicitud.getId());
+            stmt.setString(2, solicitud.getTipo_actividad());
+            stmt.setString(3, solicitud.getTitulo_actividad());
+            stmt.setInt(4, solicitud.getDepartamento().getId());
+            stmt.setBoolean(5, solicitud.isPrevisto());
+            stmt.setBoolean(6, solicitud.isMedio_transporte());
+            stmt.setDate(7, Date.valueOf(solicitud.getFechaini()));
+            stmt.setTime(8, Time.valueOf(solicitud.getHoraini()));
+            stmt.setDate(9, Date.valueOf(solicitud.getFechafn()));
+            stmt.setTime(10, Time.valueOf(solicitud.getHorafn()));
+            stmt.setString(11, solicitud.getNumeroalumnos());
+            stmt.setBoolean(12, solicitud.isAlojamiento());
+            stmt.setString(13, solicitud.getComentarios());
+            stmt.setString(14, solicitud.getEstado().name());
+            stmt.setInt(15, solicitud.getProfesor_solicitante().getId());
+            
+            int salida = stmt.executeUpdate();
+            if (salida != 1) {
+                throw new Exception(" No se ha insertado/modificado un solo registro");
+            }
+
+        } catch (SQLException ex) {
+            // errores
+            System.out.println("SQLException: " + ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    @Override
+    public void eliminar(int id) {
+        String sql = "DELETE FROM solicitudes WHERE idsolicitud=?";
+        try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
+            stmt.setInt(1, id);
+            int salida = stmt.executeUpdate();
+            if (salida != 1) {
+                throw new Exception(" No se ha borrado un solo registro");
+            }
+        } catch (SQLException ex) {
+            // errores
+            System.out.println("SQLException: " + ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    private Solicitudes crearSolicitud(final ResultSet rs) throws SQLException {
+        Solicitudes.estadosoli estado= Solicitudes.estadosoli.valueOf(rs.getString("estado"));
+        DepartamentoDAO1 d=new DepartamentoDAO1();
+        ProfesorDAO p=new ProfesorDAO();
+        return new Solicitudes(rs.getInt("idsolicitud"),rs.getString("titulo_actividad"),rs.getString("tipo_actividad"),rs.getString("numeroalumnos"),rs.getString("comentarios"),rs.getBoolean("previsto"),rs.getBoolean("medio_transporte"),rs.getBoolean("alojamiento"),rs.getDate("fechaini").toLocalDate(),rs.getDate("fechafn").toLocalDate(),rs.getTime("horaini").toLocalTime(),rs.getTime("horafn").toLocalTime(),estado,d.porId(rs.getInt("departamento")),p.porId(rs.getInt("idprofesores_solicitante")));
+    }
+
+    @Override
+    public void modificar(Solicitudes t) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

@@ -102,4 +102,29 @@ public class MedioTransporteDAO implements Repositorio<MedioTransporte> {
         MedioTransporte.tipostransporte tipo=MedioTransporte.tipostransporte.valueOf(rs.getString("tipo"));
         return new MedioTransporte(rs.getInt("id"),tipo);
     }
+
+    @Override
+    public void modificar(MedioTransporte t) {
+        String sql = null;
+       
+            
+            sql="update medio_transporte set tipo=? where id=?";
+        try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
+
+            stmt.setString(1, t.getTipo().name());
+            stmt.setInt(2, t.getId());
+            
+            
+            int salida = stmt.executeUpdate();
+            if (salida != 1) {
+                throw new Exception(" No se ha modificado un solo registro");
+            }
+
+        } catch (SQLException ex) {
+            // errores
+            System.out.println("SQLException: " + ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
 }

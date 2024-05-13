@@ -100,6 +100,34 @@ public class PerfilAccesoDAO implements Repositorio<PerfilAcceso> {
     }
 
     private PerfilAcceso crearPerfil(final ResultSet rs) throws SQLException {
-        return new PerfilAcceso(Profesor profesor=new Profesor(rs.getInt("idprofesor"),rs.getString("nombre"),rs.getString("apellidos"),rs.getString("dni"),rs.getString("correo"),),rs.getString("tipo"),rs.getString(3),rs.getString(4));
+        ProfesorDAO p=new ProfesorDAO();
+        PerfilAcceso.tiposAcceso tipo=PerfilAcceso.tiposAcceso.valueOf(rs.getString("tipo"));
+        return new PerfilAcceso(p.porId(rs.getInt("idprofesor")),tipo,rs.getString("correo"),rs.getString("password"));
+    }
+
+    @Override
+    public void modificar(PerfilAcceso t) {
+         String sql = null;
+       
+            
+            sql="update perfil_acceso set tipo=?,correo=?,password=? where idprofesor=?";
+        try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
+
+            stmt.setString(1, t.getTipo());
+            stmt.setString(2, t.getCorreo());
+            stmt.setString(3, t.getPassword());
+            stmt.setInt(4,t.getIdprofesor().getId());
+            
+            int salida = stmt.executeUpdate();
+            if (salida != 1) {
+                throw new Exception(" No se ha modificado un solo registro");
+            }
+
+        } catch (SQLException ex) {
+            // errores
+            System.out.println("SQLException: " + ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
     }
 }

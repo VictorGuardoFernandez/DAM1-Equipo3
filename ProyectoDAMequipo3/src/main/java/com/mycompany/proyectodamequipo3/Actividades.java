@@ -12,13 +12,16 @@ import java.time.LocalTime;
  * @author DAM128
  */
 public class Actividades {
-     private String titulo_actividad,tipo_actividad,numeroalumnos,comentarios;
+    private String titulo_actividad,tipo_actividad,numeroalumnos,comentarios;
     private boolean previsto,medio_transporte,alojamiento;
     private LocalDate fechaini,fechafn;
     private LocalTime horaini,horafn;
-    private int departamento,id;
+    private int id;
+    private Departamento departamento;
+    private Solicitudes solicitud;
 
-    public Actividades(String titulo_actividad, String tipo_actividad, String numeroalumnos, String comentarios, boolean previsto, boolean medio_transporte, boolean alojamiento, LocalDate fechaini, LocalDate fechafn, LocalTime horaini, LocalTime horafn, int departamento) {
+    public Actividades(int id,String titulo_actividad, String tipo_actividad, String numeroalumnos, String comentarios, boolean previsto, boolean medio_transporte, boolean alojamiento, LocalDate fechaini, LocalDate fechafn, LocalTime horaini, LocalTime horafn, Departamento departamento,Solicitudes solicitud) {
+        this.id=id;
         this.titulo_actividad = titulo_actividad;
         this.tipo_actividad = tipo_actividad;
         this.numeroalumnos = numeroalumnos;
@@ -121,13 +124,19 @@ public class Actividades {
         this.horafn = horafn;
     }
 
-    public int getDepartamento() {
+    public int getId() {
+        return id;
+    }
+
+    public Departamento getDepartamento() {
         return departamento;
     }
 
-    public void setDepartamento(int departamento) {
-        this.departamento = departamento;
+    public Solicitudes getSolicitud() {
+        return solicitud;
     }
+
+    
 
     @Override
     public String toString() {

@@ -112,4 +112,30 @@ public class GruposDAO implements Repositorio<Grupos> {
         Curso curso=new Curso(rs.getString("codcurso"),rs.getString("desc_curso"),rs.getString("etapa"),rs.getBoolean("activoc"),rs.getInt("idcurso"));
         return new Grupos(curso,rs.getInt("num_alumnos"),rs.getBoolean("activog"),rs.getString("codgrupo"));
     }
+
+    @Override
+    public void modificar(Grupos t) {
+         String sql = null;
+       
+            
+            sql="update grupo set idcurso=?,num_alumnos=?,activo=?,codgrupo=? where idgrupo=?";
+        try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
+
+            stmt.setInt(1,t.getCurso().getId());
+            stmt.setString(2, ""+t.getNum_alumnos());
+            stmt.setBoolean(3, t.isActivo());
+            stmt.setString(4,t.getCodgrupo());
+            stmt.setInt(5,t.getId());
+            int salida = stmt.executeUpdate();
+            if (salida != 1) {
+                throw new Exception(" No se ha modificado un solo registro");
+            }
+
+        } catch (SQLException ex) {
+            // errores
+            System.out.println("SQLException: " + ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
 }

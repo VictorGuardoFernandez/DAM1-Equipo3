@@ -23,6 +23,8 @@ public interface Repositorio<T> {
     // aunque también se pueden crear un método para añadir un objeto y otro para modificar
     // inserta un registro en la tabla o bien lo modifica
     public void guardar(T t);
+    
+    public void modificar(T t);
     // método para borrar un objeto por su ID
     // nos permite borrar un registro de la base de datos por clave primaria
     public void eliminar( int  id);

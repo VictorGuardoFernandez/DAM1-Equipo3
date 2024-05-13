@@ -127,4 +127,9 @@ public class DepartamentoDAO1 implements Repositorio<Departamento> {
         departa.setIdjefe(pro);
         return departa;
     }
+
+    @Override
+    public void modificar(Departamento t) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

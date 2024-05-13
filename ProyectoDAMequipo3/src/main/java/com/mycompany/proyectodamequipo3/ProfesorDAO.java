@@ -107,7 +107,33 @@ public class ProfesorDAO implements Repositorio<Profesor> {
     }
     
     private Profesor crearProfesor(final ResultSet rs) throws SQLException {
-        DepartamentoDAO d=new DepartamentoDAO();
-        return new Profesor(rs.getInt("idprofesores"),rs.getString("nombre"),rs.getString("apellidos"),rs.getString("dni"),rs.getString("correo"),DepartamentoDAO1.);
+        DepartamentoDAO1 d=new DepartamentoDAO1();
+        return new Profesor(rs.getInt("idprofesores"),rs.getString("nombre"),rs.getString("apellidos"),rs.getString("dni"),rs.getString("correo"),d.porId(rs.getInt("idDepartamento")));
+    }
+
+    @Override
+    public void modificar(Profesor t) {
+        String sql = null;
+       
+            
+            sql="update profesores set nombre=?,apellidos=?,dni=?,correo=?,departamento where idprofesor=?";
+        try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
+
+            stmt.setString(1, t.getTipo());
+            stmt.setString(2, t.getCorreo());
+            stmt.setString(3, t.getPassword());
+            stmt.setInt(4,t.getIdprofesor().getId());
+            
+            int salida = stmt.executeUpdate();
+            if (salida != 1) {
+                throw new Exception(" No se ha modificado un solo registro");
+            }
+
+        } catch (SQLException ex) {
+            // errores
+            System.out.println("SQLException: " + ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
     }
 }
