@@ -116,13 +116,15 @@ public class ProfesorDAO implements Repositorio<Profesor> {
         String sql = null;
        
             
-            sql="update profesores set nombre=?,apellidos=?,dni=?,correo=?,departamento where idprofesor=?";
+            sql="update profesores set nombre=?,apellidos=?,dni=?,correo=?,departamento=? where idprofesor=?";
         try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
 
-            stmt.setString(1, t.getTipo());
-            stmt.setString(2, t.getCorreo());
-            stmt.setString(3, t.getPassword());
-            stmt.setInt(4,t.getIdprofesor().getId());
+            stmt.setString(1, t.getNombre());
+            stmt.setString(2, t.getApellidos());
+            stmt.setString(3, t.getDni());
+            stmt.setString(4,t.getCorreo());
+            stmt.setInt(5, t.getDepartamento().getId());
+            stmt.setInt(6, t.getId());
             
             int salida = stmt.executeUpdate();
             if (salida != 1) {

@@ -99,6 +99,31 @@ public class ActividadesDAO implements Repositorio<Actividades> {
             System.out.println(ex.getMessage());
         }
     }
+    @Override
+    public void modificar(Actividades t) {
+       String sql = null;
+       
+            
+            sql="update cursos set codcurso=?,desc_curso=?,etapa=?,activo=? where idcurso=?";
+        try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
+
+            stmt.setString(1,t.getCodcurso());
+            stmt.setString(2, t.getDesc_curso());
+            stmt.setString(3, t.getEtapa());
+            stmt.setBoolean(4, t.isActivo());
+            stmt.setInt(5,t.getId());
+            int salida = stmt.executeUpdate();
+            if (salida != 1) {
+                throw new Exception(" No se ha modificado un solo registro");
+            }
+
+        } catch (SQLException ex) {
+            // errores
+            System.out.println("SQLException: " + ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
 
     private Actividades crearActividad(final ResultSet rs) throws SQLException {
         return new Actividades(rs.getString("nombre"), rs.getString("apellidos"), rs.getString("dni"), rs.getString("correo"), rs.getInt("departamento"));
