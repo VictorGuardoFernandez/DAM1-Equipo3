@@ -26,7 +26,7 @@ public class GruposDAO implements Repositorio<Grupos> {
     @Override
     public List<Grupos> listar() {
         List<Grupos> grupos = new ArrayList<>();
-        try (Statement stmt = getConnection().createStatement(); ResultSet rs = stmt.executeQuery("SELECT id,nombre,cantidad FROM grupos");) {
+        try (Statement stmt = getConnection().createStatement(); ResultSet rs = stmt.executeQuery("SELECT  FROM grupos");) {
             while (rs.next()) {
                 Grupos grupo = crearGrupo(rs);
                 if (!grupos.add(grupo)) {
@@ -47,7 +47,7 @@ public class GruposDAO implements Repositorio<Grupos> {
     @Override
     public Grupos porId(int id) {
         Grupos grupo = null;
-        String sql = "SELECT idgrupo,num_alumnos,grupo.activo as activog,codgrupo,cursos.idcurso,codcurso,desc_curso,etapa,cursos.activo as activoc FROM grupos inner join cursos using(idcurso)  WHERE idgrupo=?";
+        String sql = "SELECT  FROM grupos inner join cursos using(idcurso)  WHERE idgrupo=?";
         try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery();) {
@@ -122,7 +122,7 @@ public class GruposDAO implements Repositorio<Grupos> {
         try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
 
             stmt.setInt(1,t.getCurso().getId());
-            stmt.setString(2, ""+t.getNum_alumnos());
+            stmt.setInt(2, t.getNum_alumnos());
             stmt.setBoolean(3, t.isActivo());
             stmt.setString(4,t.getCodgrupo());
             stmt.setInt(5,t.getId());

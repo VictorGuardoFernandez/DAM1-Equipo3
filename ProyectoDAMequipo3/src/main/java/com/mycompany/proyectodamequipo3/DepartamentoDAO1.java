@@ -130,6 +130,30 @@ public class DepartamentoDAO1 implements Repositorio<Departamento> {
 
     @Override
     public void modificar(Departamento t) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+         String sql = null;
+       
+            
+            sql="update cursos set cod_departamento=? nom_departamento=? idjefe_departamento=? where idDepartamentos=?";
+        try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
+
+            stmt.setString(1,t.getCod_departamento());
+            stmt.setString(2, t.getNom_departamento());
+            stmt.setInt(3, t.getIdjefe().getId());
+            stmt.setInt(4, t.getId());
+            
+            int salida = stmt.executeUpdate();
+            if (salida != 1) {
+                throw new Exception(" No se ha modificado un solo registro");
+            }
+
+        } catch (SQLException ex) {
+            // errores
+            System.out.println("SQLException: " + ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
     }
 }
+
+
+

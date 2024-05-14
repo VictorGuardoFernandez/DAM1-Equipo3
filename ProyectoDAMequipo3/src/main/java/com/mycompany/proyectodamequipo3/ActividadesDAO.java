@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author DAM128
  */
-public class ActividadesDAO implements Repositorio<Actividades> {
+/*public class ActividadesDAO implements Repositorio<Actividades> {
 
     private Connection getConnection() {
         return AccesoBaseDatos.getInstance().getConn();
@@ -127,4 +127,4 @@ public class ActividadesDAO implements Repositorio<Actividades> {
 
     private Actividades crearActividad(final ResultSet rs) throws SQLException {
         return new Actividades(rs.getString("nombre"), rs.getString("apellidos"), rs.getString("dni"), rs.getString("correo"), rs.getInt("departamento"));
-    
+  */  

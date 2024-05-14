@@ -6,6 +6,7 @@ package com.mycompany.proyectodamequipo3;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.LinkedList;
 
 /**
  *
@@ -21,8 +22,12 @@ public class Solicitudes {
     private Profesor profesor_solicitante;
     public enum estadosoli{solicitado,aprobado,denegado,realizado};
     private estadosoli estado;
-    public Solicitudes(int id,String titulo_actividad, String tipo_actividad, String numeroalumnos, String comentarios, boolean previsto, boolean medio_transporte, boolean alojamiento, LocalDate fechaini, LocalDate fechafn, LocalTime horaini, LocalTime horafn,estadosoli estado, Departamento departamento, Profesor profesor_solicitante) {
-        this.id=id;
+    private LinkedList<Profesor> participantes;
+    private LinkedList<Grupos> grupos;
+    private LinkedList<Curso> cursos;
+    private LinkedList<MedioTransporte> transporte;
+
+    public Solicitudes(String titulo_actividad, String tipo_actividad, String numeroalumnos, String comentarios, boolean previsto, boolean medio_transporte, boolean alojamiento, LocalDate fechaini, LocalDate fechafn, LocalTime horaini, LocalTime horafn, int id, Departamento departamento, Profesor profesor_solicitante, estadosoli estado, LinkedList<Profesor> participantes, LinkedList<Grupos> grupos, LinkedList<Curso> cursos, LinkedList<MedioTransporte> transporte) {
         this.titulo_actividad = titulo_actividad;
         this.tipo_actividad = tipo_actividad;
         this.numeroalumnos = numeroalumnos;
@@ -34,10 +39,16 @@ public class Solicitudes {
         this.fechafn = fechafn;
         this.horaini = horaini;
         this.horafn = horafn;
+        this.id = id;
         this.departamento = departamento;
         this.profesor_solicitante = profesor_solicitante;
-        this.estado=estado;
+        this.estado = estado;
+        this.participantes = participantes;
+        this.grupos = grupos;
+        this.cursos = cursos;
+        this.transporte = transporte;
     }
+    
 
     public String getTitulo_actividad() {
         return titulo_actividad;
@@ -143,7 +154,21 @@ public class Solicitudes {
         return estado;
     }
 
-  
+    public LinkedList<Profesor> getParticipantes() {
+        return participantes;
+    }
+
+    public LinkedList<Grupos> getGrupos() {
+        return grupos;
+    }
+
+    public LinkedList<Curso> getCursos() {
+        return cursos;
+    }
+
+    public LinkedList<MedioTransporte> getTransporte() {
+        return transporte;
+    }
 
     @Override
     public String toString() {

@@ -16,8 +16,8 @@ import java.sql.Time;
  *
  * @author DAM128
  */
-public class SolicitudesDAO implements Repositorio<Solicitudes> {
-
+//public class SolicitudesDAO implements Repositorio<Solicitudes> {
+/*
     private Connection getConnection() {
         return AccesoBaseDatos.getInstance().getConn();
     }
@@ -45,7 +45,7 @@ public class SolicitudesDAO implements Repositorio<Solicitudes> {
     @Override
     public Solicitudes porId(int id) {
         Solicitudes solicitud = null;
-        String sql = "SELECT idsolicitud,tipo_actividad,titulo_actividad,departamento,cod_departamento,nom_departamento,idjefe_departamento,idprofesores_solicitante,nombre,apellidos,dni,correo,previsto,medio_transporte,fechaini,horaini,fechafn,horafn,numeroalumnos,alojamiento,comentarios,estado FROM solicitudes_actividades inner join departamentos on departamento=idDepartamentos inner join profesores on idprofesores=idprofesores_solicitante WHERE idsolicitud=?";
+        String sql = "SELECT idsolicitud,tipo_actividad,titulo_actividad,solicitudes.departamento,cod_departamento,nom_departamento,idjefe_departamento,idprofesores_solicitante,nombre,apellidos,dni,correo,previsto,medio_transporte,fechaini,horaini,fechafn,horafn,numeroalumnos,alojamiento,comentarios,estado FROM solicitudes inner join departamentos on departamento=idDepartamentos inner join profesores on idprofesores=idprofesores_solicitante inner join profesor_participantes using(idsolicitud) inner join solicitudes_grupo using(idsolicitud) inner join solicitudes_cursos using(idsolicitud) inner join medio_transporte_has_solicitudes_actividades on idsolicitud=solicitudes_actividades_idsolicitud WHERE idsolicitud=?";
         try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery();) {
@@ -117,11 +117,11 @@ public class SolicitudesDAO implements Repositorio<Solicitudes> {
         Solicitudes.estadosoli estado= Solicitudes.estadosoli.valueOf(rs.getString("estado"));
         DepartamentoDAO1 d=new DepartamentoDAO1();
         ProfesorDAO p=new ProfesorDAO();
-        return new Solicitudes(rs.getInt("idsolicitud"),rs.getString("titulo_actividad"),rs.getString("tipo_actividad"),rs.getString("numeroalumnos"),rs.getString("comentarios"),rs.getBoolean("previsto"),rs.getBoolean("medio_transporte"),rs.getBoolean("alojamiento"),rs.getDate("fechaini").toLocalDate(),rs.getDate("fechafn").toLocalDate(),rs.getTime("horaini").toLocalTime(),rs.getTime("horafn").toLocalTime(),estado,d.porId(rs.getInt("departamento")),p.porId(rs.getInt("idprofesores_solicitante")));
+        return new Solicitudes(rs.getInt("idsolicitud"),rs.getString("titulo_actividad"),rs.getString("tipo_actividad"),rs.getString("numeroalumnos"),rs.getString("comentarios"),rs.getBoolean("previsto"),rs.getBoolean("medio_transporte"),rs.getBoolean("alojamiento"),rs.getDate("fechaini").toLocalDate(),rs.getDate("fechafn").toLocalDate(),rs.getTime("horaini").toLocalTime(),rs.getTime("horafn").toLocalTime(),estado,d.porId(rs.getInt("departamento")),p.porId(rs.getInt("idprofesores_solicitante")),);
     }
 
     @Override
     public void modificar(Solicitudes t) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-}
+}*/

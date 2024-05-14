@@ -26,7 +26,7 @@ public class ProfesorDAO implements Repositorio<Profesor> {
     @Override
     public List listar() {
         List<Profesor> profesores = new ArrayList<>();
-         try ( Statement stmt = getConnection().createStatement();  ResultSet rs = stmt.executeQuery("SELECT  FROM profesores");) {
+         try ( Statement stmt = getConnection().createStatement();  ResultSet rs = stmt.executeQuery("SELECT idprofesores,nombre,apellidos,dni,correo,departamento FROM profesores");) {
             while (rs.next()) {
                 Profesor profesor = crearProfesor(rs);
                 if (!profesores.add(profesor)) {
@@ -47,7 +47,7 @@ public class ProfesorDAO implements Repositorio<Profesor> {
     @Override
     public Profesor porId(int id) {
          Profesor profesor = null;
-        String sql = "SELECT idprofesores,nombre,apellidos,dni,correo,departamento FROM profesores WHERE id=?";
+        String sql = "SELECT idprofesores,nombre,apellidos,dni,correo,departamento FROM profesores WHERE idprofesores=?";
         try ( PreparedStatement stmt = getConnection().prepareStatement(sql);) {
             stmt.setInt(1, id);
             try ( ResultSet rs = stmt.executeQuery();) {
@@ -108,7 +108,7 @@ public class ProfesorDAO implements Repositorio<Profesor> {
     
     private Profesor crearProfesor(final ResultSet rs) throws SQLException {
         DepartamentoDAO1 d=new DepartamentoDAO1();
-        return new Profesor(rs.getInt("idprofesores"),rs.getString("nombre"),rs.getString("apellidos"),rs.getString("dni"),rs.getString("correo"),d.porId(rs.getInt("idDepartamento")));
+        return new Profesor(rs.getInt("idprofesores"),rs.getString("nombre"),rs.getString("apellidos"),rs.getString("dni"),rs.getString("correo"),d.porId(rs.getInt("departamento")));
     }
 
     @Override

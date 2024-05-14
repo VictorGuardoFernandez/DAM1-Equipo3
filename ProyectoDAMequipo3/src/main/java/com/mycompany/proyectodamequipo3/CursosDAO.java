@@ -26,7 +26,7 @@ public class CursosDAO implements Repositorio<Curso> {
     @Override
     public List<Curso> listar() {
         List<Curso> cursos = new ArrayList<>();
-        try (Statement stmt = getConnection().createStatement(); ResultSet rs = stmt.executeQuery("SELECT id,nombre,cantidad FROM cursos");) {
+        try (Statement stmt = getConnection().createStatement(); ResultSet rs = stmt.executeQuery("SELECT idcurso,codcurso,desc_curso,etapa,activo cursos");) {
             while (rs.next()) {
                 Curso curso = crearCurso(rs);
                 if (!cursos.add(curso)) {
