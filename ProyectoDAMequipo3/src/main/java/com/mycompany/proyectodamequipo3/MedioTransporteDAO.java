@@ -23,7 +23,7 @@ public class MedioTransporteDAO implements Repositorio<MedioTransporte> {
     @Override
     public List<MedioTransporte> listar() {
         List<MedioTransporte> mediosTransporte = new ArrayList<>();
-        try (Statement stmt = getConnection().createStatement(); ResultSet rs = stmt.executeQuery("SELECT id, nombre, apellidos FROM medios_transporte");) {
+        try (Statement stmt = getConnection().createStatement(); ResultSet rs = stmt.executeQuery("SELECT id,tipo FROM medio_transporte");) {
             while (rs.next()) {
                 MedioTransporte medioTransporte = crearMedioTransporte(rs);
                 if (!mediosTransporte.add(medioTransporte)) {
@@ -43,7 +43,7 @@ public class MedioTransporteDAO implements Repositorio<MedioTransporte> {
     @Override
     public MedioTransporte porId(int id) {
         MedioTransporte medioTransporte = null;
-        String sql = "SELECT id,tipo FROM medios_transporte WHERE id=?";
+        String sql = "SELECT id,tipo FROM medio_transporte WHERE id=?";
         try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery();) {
@@ -61,7 +61,7 @@ public class MedioTransporteDAO implements Repositorio<MedioTransporte> {
 
     @Override
     public void guardar(MedioTransporte medioTransporte) {
-        String sql = "INSERT INTO medios_transporte(id,tipo) VALUES (?,?)";
+        String sql = "INSERT INTO medio_transporte(id,tipo) VALUES (?,?)";
 
         try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
 
@@ -83,7 +83,7 @@ public class MedioTransporteDAO implements Repositorio<MedioTransporte> {
 
     @Override
     public void eliminar(int id) {
-        String sql = "DELETE FROM medios_transporte WHERE id=?";
+        String sql = "DELETE FROM medio_transporte WHERE id=?";
         try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
             stmt.setInt(1, id);
             int salida = stmt.executeUpdate();

@@ -14,11 +14,12 @@ public class Grupos {
     private String codgrupo;
     private Curso curso;
 
-    public Grupos(Curso idcurso, int num_alumnos, boolean activo, String codgrupo) {
+    public Grupos(int id,Curso idcurso, int num_alumnos, boolean activo, String codgrupo) {
         this.curso = idcurso;
         this.num_alumnos = num_alumnos;
         this.activo = activo;
         this.codgrupo = codgrupo;
+        this.id=id;
     }
 
     public int getId() {

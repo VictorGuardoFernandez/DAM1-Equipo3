@@ -26,7 +26,7 @@ public class GruposDAO implements Repositorio<Grupos> {
     @Override
     public List<Grupos> listar() {
         List<Grupos> grupos = new ArrayList<>();
-        try (Statement stmt = getConnection().createStatement(); ResultSet rs = stmt.executeQuery("SELECT  FROM grupos");) {
+        try (Statement stmt = getConnection().createStatement(); ResultSet rs = stmt.executeQuery("SELECT idgrupo,num_alumnos,grupo.activo as activog,codgrupo,cursos.idcurso,codcurso,desc_curso,etapa,cursos.activo as activoc FROM grupo inner join cursos using(idcurso)");) {
             while (rs.next()) {
                 Grupos grupo = crearGrupo(rs);
                 if (!grupos.add(grupo)) {
@@ -47,7 +47,7 @@ public class GruposDAO implements Repositorio<Grupos> {
     @Override
     public Grupos porId(int id) {
         Grupos grupo = null;
-        String sql = "SELECT  FROM grupos inner join cursos using(idcurso)  WHERE idgrupo=?";
+        String sql = "SELECT idgrupo,num_alumnos,grupo.activo as activog,codgrupo,cursos.idcurso,codcurso,desc_curso,etapa,cursos.activo as activoc FROM grupo inner join cursos using(idcurso)  WHERE idgrupo=?";
         try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery();) {
@@ -93,7 +93,7 @@ public class GruposDAO implements Repositorio<Grupos> {
     @Override
     public void eliminar(int id) {
 
-        String sql = "DELETE FROM grupos WHERE id=?";
+        String sql = "DELETE FROM grupo WHERE id=?";
         try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
             stmt.setInt(1, id);
             int salida = stmt.executeUpdate();
@@ -110,7 +110,7 @@ public class GruposDAO implements Repositorio<Grupos> {
 
     private Grupos crearGrupo(final ResultSet rs) throws SQLException {
         Curso curso=new Curso(rs.getString("codcurso"),rs.getString("desc_curso"),rs.getString("etapa"),rs.getBoolean("activoc"),rs.getInt("idcurso"));
-        return new Grupos(curso,rs.getInt("num_alumnos"),rs.getBoolean("activog"),rs.getString("codgrupo"));
+        return new Grupos(rs.getInt("idgrupo"),curso,rs.getInt("num_alumnos"),rs.getBoolean("activog"),rs.getString("codgrupo"));
     }
 
     @Override

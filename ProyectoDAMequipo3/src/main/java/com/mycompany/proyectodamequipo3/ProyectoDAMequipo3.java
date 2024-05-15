@@ -13,8 +13,10 @@ public class ProyectoDAMequipo3 {
     public static void main(String[] args) {
         java.awt.EventQueue.invokeLater(new Runnable(){
             public void run(){
-                new Menu().setVisible(true);
-            }
+               Sesion s=new Sesion();
+                s.setVisible(true);
+                s.setLocationRelativeTo(null);
+            }   
         });
     }
 }

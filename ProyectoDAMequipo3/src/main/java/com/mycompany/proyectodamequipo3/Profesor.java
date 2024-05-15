@@ -43,6 +43,10 @@ public class Profesor {
         return id;
     }
 
+    public void setDepartamento(Departamento departamento) {
+        this.departamento = departamento;
+    }
+
     
 
     public String getDni() {

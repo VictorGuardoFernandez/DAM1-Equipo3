@@ -19,6 +19,11 @@ public class Departamento {
         this.nom_departamento = nom_departamento;
         this.idjefe = idjefe;
     }
+    public Departamento(int id,String cod_departamento, String nom_departamento) {
+        this.id=id;
+        this.cod_departamento = cod_departamento;
+        this.nom_departamento = nom_departamento;
+    }
 
     public int getId() {
         return id;

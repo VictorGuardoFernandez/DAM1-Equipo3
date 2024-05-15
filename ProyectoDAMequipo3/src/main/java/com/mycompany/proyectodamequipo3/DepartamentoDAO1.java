@@ -18,55 +18,37 @@ import java.util.List;
  */
 public class DepartamentoDAO1 implements Repositorio<Departamento> {
 
-    
     private Connection getConnection() {
         return AccesoBaseDatos.getInstance().getConn();
     }
-    
+
     @Override
     public List listar() {
         List<Departamento> productos = new ArrayList<>();
-         try ( Statement stmt = getConnection().createStatement();  ResultSet rs = stmt.executeQuery("SELECT idDepartamentos,cod_departamento,nom_departamento,idjefe_departamento  FROM departamentos");) {
+        try (Statement stmt = getConnection().createStatement(); ResultSet rs = stmt.executeQuery("SELECT idDepartamentos,cod_departamento,nom_departamento,nvl(idjefe_departamento,0)as idjefe_departamento,nombre,apellidos,dni,correo FROM departamentos left join profesores on idjefe_departamento=idprofesores");) {
             while (rs.next()) {
                 Departamento departamento = crearDepartamento(rs);
                 if (!productos.add(departamento)) {
                     throw new Exception("error no se ha insertado el objeto en la colección");
                 }
-            } 
-            
+            }
 
         } catch (SQLException ex) {
             // errores
-            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLon: " + ex.getMessage());
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
         return productos;
     }
-    public Departamento porIdJefe(int id) {
-         Departamento departamento = null;
-        String sql = "SELECT idDepartamentos,cod_departamento,nom_departamento,idjefe_departamento,nombre,apellidos,dni,correo FROM departamentos inner join profesores on idDepartamentos=departamento WHERE idDepartamentos=? and idjefe_departamento=idprofesores";
-        try ( PreparedStatement stmt = getConnection().prepareStatement(sql);) {
-            stmt.setInt(1, id);
-            try ( ResultSet rs = stmt.executeQuery();) {
-                if (rs.next()) {
-                    departamento = crearDepartamento(rs);
-                }
-            }
 
-        } catch (SQLException ex) {
-            // errores
-            System.out.println("SQLException: " + ex.getMessage());
-        }
-        return departamento;
-    }
     @Override
     public Departamento porId(int id) {
-         Departamento departamento = null;
-        String sql = "SELECT idDepartamentos,cod_departamento,nom_departamento,idjefe_departamento FROM departamentos WHERE idDepartamentos=?";
-        try ( PreparedStatement stmt = getConnection().prepareStatement(sql);) {
+        Departamento departamento = null;
+        String sql = "SELECT idDepartamentos,cod_departamento,nom_departamento,nvl(idjefe_departamento,0)as idjefe_departamento,nombre,apellidos,dni,correo  FROM departamentos left join profesores on idjefe_departamento=idprofesores WHERE idDepartamentos=?";
+        try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
             stmt.setInt(1, id);
-            try ( ResultSet rs = stmt.executeQuery();) {
+            try (ResultSet rs = stmt.executeQuery();) {
                 if (rs.next()) {
                     departamento = crearDepartamento(rs);
                 }
@@ -83,10 +65,9 @@ public class DepartamentoDAO1 implements Repositorio<Departamento> {
     public void guardar(Departamento departamento) {
         String sql = null;
         sql = "INSERT INTO departamentos(idDepartamentos,cod_departamento,nom_departamento,idjefe_departamento) VALUES (?,?,?,?)";
-       
-        try ( PreparedStatement stmt = getConnection().prepareStatement(sql);) {
 
-            
+        try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
+
             stmt.setInt(1, departamento.getId());
             stmt.setString(2, departamento.getCod_departamento());
             stmt.setString(3, departamento.getNom_departamento());
@@ -106,8 +87,8 @@ public class DepartamentoDAO1 implements Repositorio<Departamento> {
 
     @Override
     public void eliminar(int id) {
-        String sql="DELETE FROM profesores WHERE id=?";
-        try ( PreparedStatement stmt = getConnection().prepareStatement(sql);) {
+        String sql = "DELETE FROM departamentos WHERE idDepartamentos=?";
+        try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
             stmt.setInt(1, id);
             int salida = stmt.executeUpdate();
             if (salida != 1) {
@@ -120,27 +101,29 @@ public class DepartamentoDAO1 implements Repositorio<Departamento> {
             System.out.println(ex.getMessage());
         }
     }
+
     private Departamento crearDepartamento(final ResultSet rs) throws SQLException {
-        Departamento departa=new Departamento(rs.getInt("idDepartamentos"),rs.getString("cod_departamento"),rs.getString("nom_departamento"),null);
-       
-        Profesor pro=new Profesor(rs.getInt("idjefe_departamento"),rs.getString("nombre"),rs.getString("apellidos"),rs.getString("dni"),rs.getString("correo"),departa);
-        departa.setIdjefe(pro);
+        Departamento departa = new Departamento(rs.getInt("idDepartamentos"), rs.getString("cod_departamento"), rs.getString("nom_departamento"));;
+
+        if (rs.getInt("idjefe_departamento") != 0) {
+            Profesor p = new Profesor(rs.getInt("idjefe_departamento"), rs.getString(5), rs.getString("apellidos"), rs.getString("dni"), rs.getString("correo"), departa);
+            departa.setIdjefe(p);
+        }
         return departa;
     }
 
     @Override
     public void modificar(Departamento t) {
-         String sql = null;
-       
-            
-            sql="update cursos set cod_departamento=? nom_departamento=? idjefe_departamento=? where idDepartamentos=?";
+        String sql = null;
+
+        sql = "update cursos set cod_departamento=? nom_departamento=? idjefe_departamento=? where idDepartamentos=?";
         try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
 
-            stmt.setString(1,t.getCod_departamento());
+            stmt.setString(1, t.getCod_departamento());
             stmt.setString(2, t.getNom_departamento());
             stmt.setInt(3, t.getIdjefe().getId());
             stmt.setInt(4, t.getId());
-            
+
             int salida = stmt.executeUpdate();
             if (salida != 1) {
                 throw new Exception(" No se ha modificado un solo registro");
@@ -154,6 +137,3 @@ public class DepartamentoDAO1 implements Repositorio<Departamento> {
         }
     }
 }
-
-
-

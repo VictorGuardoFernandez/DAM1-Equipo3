@@ -17,14 +17,14 @@ import java.util.List;
  * @author DAM128
  */
 public class ProfesorDAO implements Repositorio<Profesor> {
-
+    private DepartamentoDAO1 d=new DepartamentoDAO1();
     
     private Connection getConnection() {
         return AccesoBaseDatos.getInstance().getConn();
     }
     
     @Override
-    public List listar() {
+    public List<Profesor> listar() {
         List<Profesor> profesores = new ArrayList<>();
          try ( Statement stmt = getConnection().createStatement();  ResultSet rs = stmt.executeQuery("SELECT idprofesores,nombre,apellidos,dni,correo,departamento FROM profesores");) {
             while (rs.next()) {
@@ -37,7 +37,8 @@ public class ProfesorDAO implements Repositorio<Profesor> {
 
         } catch (SQLException ex) {
             // errores
-            System.out.println("SQLException: " + ex.getMessage());
+             System.out.println("sdasdawdfa");
+            
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
@@ -59,6 +60,7 @@ public class ProfesorDAO implements Repositorio<Profesor> {
         } catch (SQLException ex) {
             // errores
             System.out.println("SQLException: " + ex.getMessage());
+            
         }
         return profesor;
     }
@@ -84,6 +86,7 @@ public class ProfesorDAO implements Repositorio<Profesor> {
         } catch (SQLException ex) {
             // errores
             System.out.println("SQLException: " + ex.getMessage());
+            
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
@@ -107,8 +110,8 @@ public class ProfesorDAO implements Repositorio<Profesor> {
     }
     
     private Profesor crearProfesor(final ResultSet rs) throws SQLException {
-        DepartamentoDAO1 d=new DepartamentoDAO1();
-        return new Profesor(rs.getInt("idprofesores"),rs.getString("nombre"),rs.getString("apellidos"),rs.getString("dni"),rs.getString("correo"),d.porId(rs.getInt("departamento")));
+        Profesor p= new Profesor(rs.getInt("idprofesores"),rs.getString("nombre"),rs.getString("apellidos"),rs.getString("dni"),rs.getString("correo"),d.porId(rs.getInt("departamento")));
+        return p;
     }
 
     @Override
