@@ -68,7 +68,7 @@ public class ProfesorDAO implements Repositorio<Profesor> {
     @Override
     public void guardar(Profesor profesor) {
         String sql = null;
-        sql = "INSERT INTO profesores(idprofesores,nombre,apellidos,dni,correo,departamento) VALUES (?,?,?,?,?)";
+        sql = "INSERT INTO profesores(nombre,apellidos,dni,correo,departamento) VALUES (?,?,?,?,?)";
        
         try ( PreparedStatement stmt = getConnection().prepareStatement(sql);) {
 
@@ -111,6 +111,7 @@ public class ProfesorDAO implements Repositorio<Profesor> {
     
     private Profesor crearProfesor(final ResultSet rs) throws SQLException {
         Profesor p= new Profesor(rs.getInt("idprofesores"),rs.getString("nombre"),rs.getString("apellidos"),rs.getString("dni"),rs.getString("correo"),d.porId(rs.getInt("departamento")));
+        System.out.println(d.porId(rs.getInt("departamento")).getId());
         return p;
     }
 

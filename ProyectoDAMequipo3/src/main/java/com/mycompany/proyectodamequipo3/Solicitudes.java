@@ -26,8 +26,9 @@ public class Solicitudes {
     private LinkedList<Grupos> grupos;
     private LinkedList<Curso> cursos;
     private LinkedList<MedioTransporte> transporte;
+    private LinkedList<Profesor>responsables;
 
-    public Solicitudes(String titulo_actividad, String tipo_actividad, String numeroalumnos, String comentarios, boolean previsto, boolean medio_transporte, boolean alojamiento, LocalDate fechaini, LocalDate fechafn, LocalTime horaini, LocalTime horafn, int id, Departamento departamento, Profesor profesor_solicitante, estadosoli estado, LinkedList<Profesor> participantes, LinkedList<Grupos> grupos, LinkedList<Curso> cursos, LinkedList<MedioTransporte> transporte) {
+    public Solicitudes(int id,String titulo_actividad, String tipo_actividad, String numeroalumnos, String comentarios, boolean previsto, boolean medio_transporte, boolean alojamiento, LocalDate fechaini, LocalDate fechafn, LocalTime horaini, LocalTime horafn, Departamento departamento, Profesor profesor_solicitante, estadosoli estado, LinkedList<Profesor> participantes,LinkedList<Profesor> responsables, LinkedList<Grupos> grupos, LinkedList<Curso> cursos, LinkedList<MedioTransporte> transporte) {
         this.titulo_actividad = titulo_actividad;
         this.tipo_actividad = tipo_actividad;
         this.numeroalumnos = numeroalumnos;
@@ -47,6 +48,7 @@ public class Solicitudes {
         this.grupos = grupos;
         this.cursos = cursos;
         this.transporte = transporte;
+        this.responsables=responsables;
     }
     
 

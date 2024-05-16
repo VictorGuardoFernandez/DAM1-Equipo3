@@ -64,7 +64,7 @@ public class DepartamentoDAO1 implements Repositorio<Departamento> {
     @Override
     public void guardar(Departamento departamento) {
         String sql = null;
-        sql = "INSERT INTO departamentos(idDepartamentos,cod_departamento,nom_departamento,idjefe_departamento) VALUES (?,?,?,?)";
+        sql = "INSERT INTO departamentos(cod_departamento,nom_departamento,idjefe_departamento) VALUES (?,?,?,?)";
 
         try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
 
