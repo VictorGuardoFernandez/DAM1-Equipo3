@@ -93,7 +93,7 @@ public class GruposDAO implements Repositorio<Grupos> {
     @Override
     public void eliminar(int id) {
 
-        String sql = "DELETE FROM grupo WHERE id=?";
+        String sql = "DELETE FROM grupo WHERE idgrupo=?";
         try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
             stmt.setInt(1, id);
             int salida = stmt.executeUpdate();

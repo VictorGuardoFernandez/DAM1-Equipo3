@@ -95,7 +95,7 @@ public class CursosDAO implements Repositorio<Curso> {
     @Override
     public void eliminar(int id) {
 
-        String sql = "DELETE FROM cursos WHERE id=?";
+        String sql = "DELETE FROM cursos WHERE idcurso=?";
         try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
             stmt.setInt(1, id);
             int salida = stmt.executeUpdate();

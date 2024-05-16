@@ -12,12 +12,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.sql.Date;
 import java.sql.Time;
+import java.util.LinkedList;
 /**
  *
  * @author DAM128
  */
-//public class SolicitudesDAO implements Repositorio<Solicitudes> {
-/*
+/*public class SolicitudesDAO implements Repositorio<Solicitudes> {
+
     private Connection getConnection() {
         return AccesoBaseDatos.getInstance().getConn();
     }
@@ -112,7 +113,93 @@ import java.sql.Time;
             System.out.println(ex.getMessage());
         }
     }
+    
+    private LinkedList<Profesor> listarparticipantes(int idsoli){
+        ProfesorDAO p=new ProfesorDAO();
+        
+        LinkedList<Profesor> profesores = new LinkedList<>();
+        String sql = "SELECT id,idprofesores from profesor_participantes where idsolicitud=? ";
+        try ( PreparedStatement stmt = getConnection().prepareStatement(sql);) {
+            stmt.setInt(1, idsoli);
+            try ( ResultSet rs = stmt.executeQuery();) {
+                if (rs.next()) {
+                    profesores.add(p.porId(rs.getInt("idprofesores")));
+                }
+            }
 
+        } catch (SQLException ex) {
+            // errores
+            System.out.println("SQLException: " + ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        return profesores; 
+    }
+     private LinkedList<Grupos> listargrupos(int idsoli){
+        GruposDAO p=new GruposDAO();
+        
+        LinkedList<Grupos> grupos = new LinkedList<>();
+        String sql = "SELECT id,grupo_idgrupo as grupo from solicitudes_grupo where idsolicitud=? ";
+        try ( PreparedStatement stmt = getConnection().prepareStatement(sql);) {
+            stmt.setInt(1, idsoli);
+            try ( ResultSet rs = stmt.executeQuery();) {
+                if (rs.next()) {
+                    grupos.add(p.porId(rs.getInt("grupo")));
+                }
+            }
+
+        } catch (SQLException ex) {
+            // errores
+            System.out.println("SQLException: " + ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        return grupos; 
+    }
+     private LinkedList<Curso> listarcursos(int idsoli){
+        CursosDAO p=new CursosDAO();
+        
+        LinkedList<Curso> cursos = new LinkedList<>();
+        String sql = "SELECT id,cursos_idcursos as curso from solicitudes_cursos where idsolicitud=? ";
+        try ( PreparedStatement stmt = getConnection().prepareStatement(sql);) {
+            stmt.setInt(1, idsoli);
+            try ( ResultSet rs = stmt.executeQuery();) {
+                if (rs.next()) {
+                    cursos.add(p.porId(rs.getInt("curso")));
+                }
+            }
+
+        } catch (SQLException ex) {
+            // errores
+            System.out.println("SQLException: " + ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        return cursos; 
+    }
+     private LinkedList<MedioTransporte> listartransporte(int idsoli){
+        MedioTransporteDAO p=new MedioTransporteDAO();
+        
+        LinkedList<MedioTransporte> transportes = new LinkedList<>();
+        String sql = "SELECT id,medio_transporte_id from medio_transporte_has_solicitudes_actividades where solicitudes_actividades_idsolicitud=?";
+        try ( PreparedStatement stmt = getConnection().prepareStatement(sql);) {
+            stmt.setInt(1, idsoli);
+            try ( ResultSet rs = stmt.executeQuery();) {
+                if (rs.next()) {
+                    transportes.add(p.porId(rs.getInt("medio_transporte_id")));
+                }
+            }
+
+        } catch (SQLException ex) {
+            // errores
+            System.out.println("SQLException: " + ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        return grupos; 
+    }
+    
+    
     private Solicitudes crearSolicitud(final ResultSet rs) throws SQLException {
         Solicitudes.estadosoli estado= Solicitudes.estadosoli.valueOf(rs.getString("estado"));
         DepartamentoDAO1 d=new DepartamentoDAO1();

@@ -94,7 +94,7 @@ public class ProfesorDAO implements Repositorio<Profesor> {
 
     @Override
     public void eliminar(int id) {
-        String sql="DELETE FROM profesores WHERE id=?";
+        String sql="DELETE FROM profesores WHERE idprofesores=?";
         try ( PreparedStatement stmt = getConnection().prepareStatement(sql);) {
             stmt.setInt(1, id);
             int salida = stmt.executeUpdate();
@@ -119,7 +119,7 @@ public class ProfesorDAO implements Repositorio<Profesor> {
         String sql = null;
        
             
-            sql="update profesores set nombre=?,apellidos=?,dni=?,correo=?,departamento=? where idprofesor=?";
+            sql="update profesores set nombre=?,apellidos=?,dni=?,correo=?,departamento=? where idprofesores=?";
         try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
 
             stmt.setString(1, t.getNombre());
