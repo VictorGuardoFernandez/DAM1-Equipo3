@@ -172,6 +172,10 @@ public class Solicitudes {
         return transporte;
     }
 
+    public LinkedList<Profesor> getResponsables() {
+        return responsables;
+    }
+    
     @Override
     public String toString() {
         return "Solicitudes{" + "titulo_actividad=" + titulo_actividad + ", tipo_actividad=" + tipo_actividad + ", numeroalumnos=" + numeroalumnos + ", comentarios=" + comentarios + ", previsto=" + previsto + ", medio_transporte=" + medio_transporte + ", alojamiento=" + alojamiento + ", fechaini=" + fechaini + ", fechafn=" + fechafn + ", horaini=" + horaini + ", horafn=" + horafn + ", departamento=" + departamento + ", profesor_solicitante=" + profesor_solicitante + '}';

@@ -26,7 +26,7 @@ public class SolicitudesDAO implements Repositorio<Solicitudes> {
     @Override
     public List<Solicitudes> listar() {
         List<Solicitudes> solicitudes = new ArrayList<>();
-        try (Statement stmt = getConnection().createStatement(); ResultSet rs = stmt.executeQuery("SELECT idsolicitud,tipo_actividad,titulo_actividad,departamento,previsto,medio_transporte,fechaini,horaini,fechafn,horafn,numeroalumnos,alojamiento,comentarios,estado,idprofesores_solicitante FROM solicitudes_actividades");) {
+        try (Statement stmt = getConnection().createStatement(); ResultSet rs = stmt.executeQuery("SELECT idsolicitud,tipo_actividad,titulo_actividad,departamento,previsto,medio_transporte,fechaini,horaini,fechafn,horafn,numeroalumnos,alojamiento,comentarios,estado,idprofesores_solicitante FROM solicitudes");) {
             while (rs.next()) {
                 Solicitudes solicitud = crearSolicitud(rs);
                 if (!solicitudes.add(solicitud)) {
@@ -167,7 +167,52 @@ public class SolicitudesDAO implements Repositorio<Solicitudes> {
         
         
     }
+    public void guardarlistagrupos(LinkedList<Grupos> grupos, int id){
+        for (Grupos grupo : grupos) {
+            String sql = "INSERT INTO solicitudes_grupo (idsolicitud,grupo_idgrupo) values(?,?)";
+             try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
 
+            stmt.setInt(1,id);
+            stmt.setInt(2, grupo.getId());
+            
+            
+            int salida = stmt.executeUpdate();
+            if (salida != 1) {
+                throw new Exception(" No se ha insertado/modificado un solo registro");
+            }
+
+        } catch (SQLException ex) {
+            // errores
+            System.out.println("SQLException: " + ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        }
+        
+        
+    }
+    public void guardarlistatransporte(LinkedList<MedioTransporte> transportes, int id){
+        for (MedioTransporte transporte : transportes) {
+            String sql = "INSERT INTO solicitudes_cursos (medio_transporte_id,solicitudes_actividades_idsolicitud) values(?,?)";
+             try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
+
+            stmt.setInt(1,transporte.getId());
+            stmt.setInt(2, id);
+            
+            
+            int salida = stmt.executeUpdate();
+            if (salida != 1) {
+                throw new Exception(" No se ha insertado/modificado un solo registro");
+            }
+
+        } catch (SQLException ex) {
+            // errores
+            System.out.println("SQLException: " + ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        }
+    }
     @Override
     public void eliminar(int id) {
         String sql = "DELETE FROM solicitudes WHERE idsolicitud=?";
@@ -301,6 +346,6 @@ public class SolicitudesDAO implements Repositorio<Solicitudes> {
 
     @Override
     public void modificar(Solicitudes t) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        
     }
 }

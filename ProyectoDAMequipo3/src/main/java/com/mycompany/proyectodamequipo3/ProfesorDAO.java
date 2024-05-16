@@ -111,7 +111,6 @@ public class ProfesorDAO implements Repositorio<Profesor> {
     
     private Profesor crearProfesor(final ResultSet rs) throws SQLException {
         Profesor p= new Profesor(rs.getInt("idprofesores"),rs.getString("nombre"),rs.getString("apellidos"),rs.getString("dni"),rs.getString("correo"),d.porId(rs.getInt("departamento")));
-        System.out.println(d.porId(rs.getInt("departamento")).getId());
         return p;
     }
 
