@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encuesta de Actividades</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="checkbox"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            margin-top: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav">
+                <a href="index.html" class="btn btn-hover">
+                <img img src="images\logo.png" alt="">
+                </a>
+    </div>
+
+<div class="container">
+    <h2> Selecciona tus actividades</h2>
+    <form>
+        <div class="form-group">
+            <label for="nombre">Nombre de la Actividad:</label>
+            <input type="text" id="nombre" name="nombre" required>
+        </div>
+        <div class="form-group">
+            <label for="profesor">Nombre:</label>
+            <input type="text" id="profesor" name="profesor" required>
+        </div>
+        <div class="form-group">
+            <label for="Alojamiento">Alojamiento:</label>
+            <select id="Alojamiento" name="Alojamiento" required>
+                <option value="">¿Hay alojamiento?</option>
+                <option value="A">Si</option>
+                <option value="B">No</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="departamento">Departamento:</label>
+            <input type="text" id="departamento" name="departamento" required>
+        </div>
+        <div class="form-group">
+            <label for="Transporte">Transporte:</label>
+            <select id="Transporte" name="Transporte" required>
+                <option value="">Seleccione un Transporte</option>
+                <option value="A">Andando</option>
+                <option value="B">Bus</option>
+                <option value="C">Tren</option>
+                <option value="D">Taxi</option>
+                <option value="E">Avion</option>
+                <option value="F">Bicicleta</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="grupo">Grupo:</label>
+            <select id="grupo" name="grupo" required>
+                <option value="">Seleccione el grupo</option>
+                <option value="A">Grupo A</option>
+                <option value="B">Grupo B</option>
+                <option value="C">Grupo C</option>
+            </select>
+        </div>
+        <button type="submit">Enviar</button>
+    </form>
+</div>
+
+</body>
+</html>
