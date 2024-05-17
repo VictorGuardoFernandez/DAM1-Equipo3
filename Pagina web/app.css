@@ -1,6 +1,6 @@
 :root {
   --main-color: #82ee2b;
-  --body-bg: #181616;
+  --body-bg: #ffffff;
   --box-bg: #221f1f;
   --text-color: #ffffff;
 
@@ -13,6 +13,9 @@
   :root {
     scroll-behavior: smooth;
   }
+}
+p{
+  color: #000000;
 }
 
 * {
@@ -290,6 +293,11 @@ btn i {
   font-size: 1.15rem;
   margin-top: var(--space-top);
   line-height: 1.5rem;
+}
+.item-content-description1 {
+  font-size: 1rem;
+  margin-top: var(--space-top);
+  line-height: 1rem;
 }
 
 .item-action {
