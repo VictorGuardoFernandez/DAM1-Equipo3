@@ -4,6 +4,8 @@
  */
 package com.mycompany.proyectodamequipo3;
 
+import java.util.List;
+
 /**
  *
  * @author DAM105
@@ -12,8 +14,9 @@ public class Sesion extends javax.swing.JFrame {
 
     protected String correo;
     protected String Contraseña;
+    private static PerfilAcceso perfil;
 
-    Menu m1 = new Menu();
+    Menu m1;
 
     /**
      * Creates new form Sesion
@@ -123,13 +126,23 @@ public class Sesion extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    public static PerfilAcceso getsesion(){
+        return perfil;
+    }
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         boolean elegir = true;
-        m1.setVisible(true);
-        m1.setLocationRelativeTo(null);
         this.correo = txtcorreo.getText();
         this.Contraseña = inicontra.getText();
+        PerfilAccesoDAO perf=new PerfilAccesoDAO();
+        List<PerfilAcceso> perfiles=perf.listar();
+        for (PerfilAcceso perfile : perfiles) {
+            if(perfile.getCorreo().equalsIgnoreCase(correo) && perfile.getPassword().equalsIgnoreCase(perf.devolverpassword(Contraseña))){
+                elegir=true;
+                perfil=perfile;
+            }
+        }
+        m1=new Menu();
+        
         if (elegir == true) {
             m1.setVisible(true);
             m1.setLocationRelativeTo(null);

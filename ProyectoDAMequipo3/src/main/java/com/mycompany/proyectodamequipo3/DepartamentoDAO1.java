@@ -25,7 +25,7 @@ public class DepartamentoDAO1 implements Repositorio<Departamento> {
     @Override
     public List listar() {
         List<Departamento> productos = new ArrayList<>();
-        try (Statement stmt = getConnection().createStatement(); ResultSet rs = stmt.executeQuery("SELECT idDepartamentos,cod_departamento,nom_departamento,nvl(idjefe_departamento,0)as idjefe_departamento,nombre,apellidos,dni,correo FROM departamentos left join profesores on idjefe_departamento=idprofesores");) {
+        try (Statement stmt = getConnection().createStatement(); ResultSet rs = stmt.executeQuery("SELECT idDepartamentos,cod_departamento,nom_departamento,IFNULL(idjefe_departamento,0)as idjefe_departamento,nombre,apellidos,dni,correo FROM departamentos left join profesores on idjefe_departamento=idprofesores");) {
             while (rs.next()) {
                 Departamento departamento = crearDepartamento(rs);
                 if (!productos.add(departamento)) {
@@ -45,7 +45,7 @@ public class DepartamentoDAO1 implements Repositorio<Departamento> {
     @Override
     public Departamento porId(int id) {
         Departamento departamento = null;
-        String sql = "SELECT idDepartamentos,cod_departamento,nom_departamento,nvl(idjefe_departamento,0)as idjefe_departamento,nombre,apellidos,dni,correo  FROM departamentos left join profesores on idjefe_departamento=idprofesores WHERE idDepartamentos=?";
+        String sql = "SELECT idDepartamentos,cod_departamento,nom_departamento,IFNULL(idjefe_departamento,0)as idjefe_departamento,nombre,apellidos,dni,correo  FROM departamentos left join profesores on idjefe_departamento=idprofesores WHERE idDepartamentos=?";
         try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery();) {
@@ -115,14 +115,24 @@ public class DepartamentoDAO1 implements Repositorio<Departamento> {
     @Override
     public void modificar(Departamento t) {
         String sql = null;
-
-        sql = "update cursos set cod_departamento=? nom_departamento=? idjefe_departamento=? where idDepartamentos=?";
+        if(t.getIdjefe()==null){
+           sql = "update departamentos set cod_departamento=?, nom_departamento=?  where idDepartamentos=?"; 
+        }else{
+            sql = "update departamentos set cod_departamento=?, nom_departamento=?, idjefe_departamento=? where idDepartamentos=?";
+        }
+        
         try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
-
+            if(t.getIdjefe()==null){
+            stmt.setString(1, t.getCod_departamento());
+            stmt.setString(2, t.getNom_departamento());
+            stmt.setInt(3, t.getId());
+            }else{
             stmt.setString(1, t.getCod_departamento());
             stmt.setString(2, t.getNom_departamento());
             stmt.setInt(3, t.getIdjefe().getId());
             stmt.setInt(4, t.getId());
+            }
+            
 
             int salida = stmt.executeUpdate();
             if (salida != 1) {

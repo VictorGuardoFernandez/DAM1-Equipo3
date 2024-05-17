@@ -9,7 +9,10 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,6 +22,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.ListModel;
 
 public class Menu extends javax.swing.JFrame {
+
     protected String creaprofesor;
     protected String creadepartamento;
     protected String creaProfresp;
@@ -30,10 +34,11 @@ public class Menu extends javax.swing.JFrame {
     protected boolean creaAloj;
     protected String creaAlojtxt;
     protected String creaadicional;
-    
-    
-    
+    private PerfilAccesoDAO perfilg = new PerfilAccesoDAO();
+    private PerfilAcceso perfil = perfilg.porId(1);
+
     public Menu() {
+        perfil = Sesion.getsesion();
         initComponents();
         cargarProfesores();
         cargarDepartamentos();
@@ -47,6 +52,7 @@ public class Menu extends javax.swing.JFrame {
         cargarGruposlista();
         cargarCursoslista();
         cargarSolicitado();
+        cargarEstado();
     }
 
     /**
@@ -70,8 +76,9 @@ public class Menu extends javax.swing.JFrame {
         jTabbedPane2 = new javax.swing.JTabbedPane();
         jPanel6 = new javax.swing.JPanel();
         jScrollPane9 = new javax.swing.JScrollPane();
-        Solicitudes = new javax.swing.JScrollPane();
+        Solicitudesscroll = new javax.swing.JScrollPane();
         Solicitudes2 = new javax.swing.JTable();
+        aplicarsoli = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         profsol = new javax.swing.JLabel();
         profpar = new javax.swing.JLabel();
@@ -83,10 +90,10 @@ public class Menu extends javax.swing.JFrame {
         creact = new javax.swing.JLabel();
         dept = new javax.swing.JLabel();
         comen = new javax.swing.JLabel();
-        crealoj = new javax.swing.JCheckBox();
+        crealoja = new javax.swing.JCheckBox();
         jScrollPane2 = new javax.swing.JScrollPane();
-        crecomen = new javax.swing.JTextArea();
-        creactpre = new javax.swing.JCheckBox();
+        comentarios = new javax.swing.JTextArea();
+        actividadprevista = new javax.swing.JCheckBox();
         btncrea = new javax.swing.JButton();
         Fechaini = new com.toedter.calendar.JCalendar();
         Fechafin = new com.toedter.calendar.JCalendar();
@@ -110,10 +117,15 @@ public class Menu extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         numAlumnos = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
+        nombresoli = new javax.swing.JTextField();
+        tiposoli = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         estado = new javax.swing.JTable();
+        Aplicarestado = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jTabbedPane4 = new javax.swing.JTabbedPane();
         jPanel8 = new javax.swing.JPanel();
@@ -167,7 +179,7 @@ public class Menu extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(csv, javax.swing.GroupLayout.PREFERRED_SIZE, 609, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
-                .addContainerGap(1819, Short.MAX_VALUE))
+                .addContainerGap(1831, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -197,9 +209,20 @@ public class Menu extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        Solicitudes.setViewportView(Solicitudes2);
+        Solicitudes2.getTableHeader().setReorderingAllowed(false);
+        Solicitudesscroll.setViewportView(Solicitudes2);
+        if (Solicitudes2.getColumnModel().getColumnCount() > 0) {
+            Solicitudes2.getColumnModel().getColumn(0).setResizable(false);
+        }
 
-        jScrollPane9.setViewportView(Solicitudes);
+        jScrollPane9.setViewportView(Solicitudesscroll);
+
+        aplicarsoli.setText("Aplicar");
+        aplicarsoli.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                aplicarsoliActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -207,15 +230,19 @@ public class Menu extends javax.swing.JFrame {
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addGap(38, 38, 38)
-                .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 1076, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(1333, Short.MAX_VALUE))
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(aplicarsoli)
+                    .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 1076, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(1345, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 497, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(382, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(aplicarsoli)
+                .addContainerGap(353, Short.MAX_VALUE))
         );
 
         jTabbedPane2.addTab("Modificar", jPanel6);
@@ -240,18 +267,18 @@ public class Menu extends javax.swing.JFrame {
 
         comen.setText("Comentarios adicionales :");
 
-        crealoj.setText("Si");
-        crealoj.addActionListener(new java.awt.event.ActionListener() {
+        crealoja.setText("Si");
+        crealoja.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                crealojActionPerformed(evt);
+                crealojaActionPerformed(evt);
             }
         });
 
-        crecomen.setColumns(20);
-        crecomen.setRows(5);
-        jScrollPane2.setViewportView(crecomen);
+        comentarios.setColumns(20);
+        comentarios.setRows(5);
+        jScrollPane2.setViewportView(comentarios);
 
-        creactpre.setText("Si");
+        actividadprevista.setText("Si");
 
         btncrea.setText("Enviar");
         btncrea.addActionListener(new java.awt.event.ActionListener() {
@@ -276,6 +303,12 @@ public class Menu extends javax.swing.JFrame {
             }
         });
 
+        solicitante.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                solicitanteActionPerformed(evt);
+            }
+        });
+
         jScrollPane1.setViewportView(transporte);
 
         jScrollPane14.setViewportView(listarespo);
@@ -292,6 +325,16 @@ public class Menu extends javax.swing.JFrame {
 
         jLabel6.setText("Numero Alumnos");
 
+        tiposoli.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tiposoliActionPerformed(evt);
+            }
+        });
+
+        jLabel7.setText("nombre actividad:");
+
+        jLabel8.setText("Tipo");
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -299,114 +342,127 @@ public class Menu extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addGap(27, 27, 27)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(profsol)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(crealoj)
-                            .addComponent(aloj)
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addComponent(profres)
-                                .addGap(146, 146, 146)
-                                .addComponent(profpar)
-                                .addGap(141, 141, 141)
-                                .addComponent(comen))))
-                    .addComponent(trans)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addGap(6, 6, 6)
-                                .addComponent(solicitante, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(71, 71, 71))
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                                .addGap(11, 11, 11)))
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addGap(61, 61, 61)
                                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(dept, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(solideparta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(172, 172, 172)
+                                    .addComponent(crealoja)
+                                    .addComponent(aloj)))
+                            .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel5Layout.createSequentialGroup()
-                                        .addGap(6, 6, 6)
-                                        .addComponent(creactpre))
-                                    .addComponent(creact, javax.swing.GroupLayout.Alignment.TRAILING)))
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addGap(12, 12, 12)
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(Fechaini, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(fini))
-                                .addGap(46, 46, 46)
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(Fechafin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(ffin))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(jScrollPane14, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(64, 64, 64)
+                                        .addComponent(listaparti, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(53, 53, 53)
+                                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(jPanel5Layout.createSequentialGroup()
-                                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(horaini, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE)
-                                            .addComponent(jLabel2)
-                                            .addComponent(jLabel4))
-                                        .addGap(45, 45, 45)
-                                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(horafn, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jLabel3))
-                                        .addGap(11, 11, 11))
-                                    .addGroup(jPanel5Layout.createSequentialGroup()
-                                        .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(profres)
+                                        .addGap(152, 152, 152)
+                                        .addComponent(profpar)
+                                        .addGap(141, 141, 141)
+                                        .addComponent(comen)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel4)
+                                    .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel5)
+                            .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btncrea))
+                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(profsol)
+                        .addComponent(trans)
+                        .addGroup(jPanel5Layout.createSequentialGroup()
+                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(jPanel5Layout.createSequentialGroup()
+                                    .addGap(6, 6, 6)
+                                    .addComponent(solicitante, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(71, 71, 71))
+                                .addGroup(jPanel5Layout.createSequentialGroup()
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                                    .addGap(11, 11, 11)))
+                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel5Layout.createSequentialGroup()
+                                    .addGap(61, 61, 61)
+                                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(dept, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(solideparta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(jPanel5Layout.createSequentialGroup()
+                                            .addGap(6, 6, 6)
+                                            .addComponent(actividadprevista))
+                                        .addComponent(creact, javax.swing.GroupLayout.Alignment.TRAILING)))
+                                .addGroup(jPanel5Layout.createSequentialGroup()
+                                    .addGap(12, 12, 12)
+                                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(Fechaini, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(fini))
+                                    .addGap(46, 46, 46)
+                                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(Fechafin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(ffin))
+                                    .addGap(18, 18, 18)
+                                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                             .addGroup(jPanel5Layout.createSequentialGroup()
-                                                .addComponent(jLabel5)
-                                                .addGap(55, 55, 55))
-                                            .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))))
-                                .addGap(47, 47, 47)
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel6)
-                                    .addComponent(numAlumnos, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(jScrollPane14, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(64, 64, 64)
-                        .addComponent(listaparti, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(53, 53, 53)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btncrea)))
-                .addContainerGap(1446, Short.MAX_VALUE))
+                                                .addComponent(jLabel2)
+                                                .addGap(64, 64, 64))
+                                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(nombresoli)
+                                                    .addComponent(horaini))
+                                                .addGap(29, 29, 29)))
+                                        .addGroup(jPanel5Layout.createSequentialGroup()
+                                            .addComponent(jLabel7)
+                                            .addGap(29, 29, 29)))
+                                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(jPanel5Layout.createSequentialGroup()
+                                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                .addComponent(jLabel3)
+                                                .addComponent(horafn, javax.swing.GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE)
+                                                .addComponent(tiposoli))
+                                            .addGap(42, 42, 42)
+                                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(numAlumnos)))
+                                        .addComponent(jLabel8)))))))
+                .addContainerGap(1333, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(profsol)
-                    .addComponent(dept)
-                    .addComponent(creact))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(creactpre)
-                    .addComponent(solicitante, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(solideparta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(profsol)
+                            .addComponent(dept)
+                            .addComponent(creact))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(actividadprevista)
+                            .addComponent(solicitante, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(solideparta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(horaini, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(0, 1, Short.MAX_VALUE)
+                                .addComponent(fini)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(Fechaini, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(50, 50, 50)
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(profres)
+                                    .addComponent(profpar)
+                                    .addComponent(comen)
+                                    .addComponent(jLabel4)
+                                    .addComponent(jLabel5)))
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel5Layout.createSequentialGroup()
-                                        .addComponent(ffin)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(Fechafin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(jPanel5Layout.createSequentialGroup()
                                         .addComponent(trans)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -414,40 +470,46 @@ public class Menu extends javax.swing.JFrame {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(aloj)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(crealoj)))
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel3)
-                                    .addComponent(jLabel6))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(horafn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(numAlumnos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel5)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(profres)
-                            .addComponent(profpar)
-                            .addComponent(comen)))
+                                        .addComponent(crealoja))
+                                    .addGroup(jPanel5Layout.createSequentialGroup()
+                                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(jLabel3)
+                                            .addComponent(jLabel6))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(horafn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(numAlumnos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addGroup(jPanel5Layout.createSequentialGroup()
+                                            .addComponent(jLabel2)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(horaini, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                .addComponent(jLabel7)
+                                                .addComponent(jLabel8))
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                .addComponent(nombresoli, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(tiposoli, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addGroup(jPanel5Layout.createSequentialGroup()
+                                            .addComponent(ffin)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(Fechafin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(jScrollPane2)
+                                .addComponent(listaparti))))
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(fini)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(Fechaini, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(72, 72, 72)))
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(109, 109, 109)
-                        .addComponent(btncrea))
-                    .addComponent(jScrollPane14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(jScrollPane2)
-                        .addComponent(listaparti)))
-                .addContainerGap(440, Short.MAX_VALUE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btncrea)
+                            .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(442, Short.MAX_VALUE))
         );
 
         jTabbedPane2.addTab("Crear", jPanel5);
@@ -468,7 +530,7 @@ public class Menu extends javax.swing.JFrame {
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false, perfil.getTipo().equalsIgnoreCase("administrador")
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -477,27 +539,40 @@ public class Menu extends javax.swing.JFrame {
         });
         jScrollPane3.setViewportView(estado);
 
+        Aplicarestado.setText("Aplicar");
+        Aplicarestado.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AplicarestadoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                .addContainerGap(2104, Short.MAX_VALUE)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addGap(26, 26, 26)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(Aplicarestado)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 1001, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 1089, Short.MAX_VALUE)
                 .addComponent(jButton1)
                 .addGap(267, 267, 267))
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addGap(49, 49, 49)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 750, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 390, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(49, 49, 49)
-                .addComponent(jButton1)
-                .addContainerGap(417, Short.MAX_VALUE))
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addGap(445, 445, 445)
+                        .addComponent(jButton1)
+                        .addGap(26, 26, 26))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 462, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                .addComponent(Aplicarestado)
+                .addContainerGap(368, Short.MAX_VALUE))
         );
 
         jTabbedPane2.addTab("Estado", jPanel7);
@@ -596,6 +671,11 @@ public class Menu extends javax.swing.JFrame {
         jScrollPane12.setViewportView(Grupos);
 
         aplicagrupos.setText("Aplicar");
+        aplicagrupos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                aplicagruposActionPerformed(evt);
+            }
+        });
 
         borrargrupo.setText("Borrar");
         borrargrupo.addActionListener(new java.awt.event.ActionListener() {
@@ -623,11 +703,11 @@ public class Menu extends javax.swing.JFrame {
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane12, javax.swing.GroupLayout.PREFERRED_SIZE, 501, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(aplicagrupos)
                     .addComponent(borrargrupo))
-                .addContainerGap(343, Short.MAX_VALUE))
+                .addContainerGap(349, Short.MAX_VALUE))
         );
 
         jTabbedPane4.addTab("Grupos", jPanel9);
@@ -651,6 +731,11 @@ public class Menu extends javax.swing.JFrame {
         jScrollPane13.setViewportView(cursos);
 
         aplicacursos.setText("Aplicar");
+        aplicacursos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                aplicacursosActionPerformed(evt);
+            }
+        });
 
         Borrarcurso.setText("Borrar");
         Borrarcurso.addActionListener(new java.awt.event.ActionListener() {
@@ -706,6 +791,11 @@ public class Menu extends javax.swing.JFrame {
         jScrollPane11.setViewportView(Departamentos);
 
         aplicardepa.setText("Aplicar");
+        aplicardepa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                aplicardepaActionPerformed(evt);
+            }
+        });
 
         Borrardepa.setText("Borrar");
         Borrardepa.addActionListener(new java.awt.event.ActionListener() {
@@ -746,7 +836,10 @@ public class Menu extends javax.swing.JFrame {
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane4)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jTabbedPane4)
+                .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -769,7 +862,7 @@ public class Menu extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(16, 16, 16)
                 .addComponent(Apagar, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(2232, Short.MAX_VALUE))
+                .addContainerGap(2244, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -785,11 +878,11 @@ public class Menu extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-  
-    private void cargarProfesores(){
-        ProfesorDAO p=new ProfesorDAO();
+
+    private void cargarProfesores() {
+        ProfesorDAO p = new ProfesorDAO();
         DefaultTableModel model = (DefaultTableModel) Profesores.getModel();
-        List<Profesor> profesores=p.listar();
+        List<Profesor> profesores = p.listar();
         for (Profesor profesor : profesores) {
             model.addRow(new Object[]{
                 profesor.getId(),
@@ -801,14 +894,15 @@ public class Menu extends javax.swing.JFrame {
             });
         }
     }
-        private void cargarDepartamentos(){
-        DepartamentoDAO1 d=new DepartamentoDAO1();
+
+    private void cargarDepartamentos() {
+        DepartamentoDAO1 d = new DepartamentoDAO1();
         DefaultTableModel model = (DefaultTableModel) Departamentos.getModel();
-        List<Departamento> departamentos=d.listar();
-        String dato=null;
+        List<Departamento> departamentos = d.listar();
+        String dato = null;
         for (Departamento departamento : departamentos) {
-            if(departamento.getIdjefe()!=null){
-                dato=String.valueOf(departamento.getIdjefe().getId());    
+            if (departamento.getIdjefe() != null) {
+                dato = String.valueOf(departamento.getIdjefe().getId());
             }
             model.addRow(new Object[]{
                 departamento.getId(),
@@ -816,75 +910,74 @@ public class Menu extends javax.swing.JFrame {
                 departamento.getNom_departamento(),
                 dato
             });
-            dato=null;
+            dato = null;
         }
     }
-        private void cargarTransportelista(){
-            MedioTransporteDAO m=new MedioTransporteDAO();
-            List<MedioTransporte> medios=m.listar();
-            DefaultListModel model=new DefaultListModel();
-            transporte.setModel(model);
-            model.addElement("0.-Sin transporte");
-            for (MedioTransporte medio : medios) {
-                model.addElement(medio.getId()+".-"+medio.getTipo().name());
-            }
-            
-            
+
+    private void cargarTransportelista() {
+        MedioTransporteDAO m = new MedioTransporteDAO();
+        List<MedioTransporte> medios = m.listar();
+        DefaultListModel model = new DefaultListModel();
+        transporte.setModel(model);
+        model.addElement("0.-Sin transporte");
+        for (MedioTransporte medio : medios) {
+            model.addElement(medio.getId() + ".-" + medio.getTipo().name());
         }
-        private void cargarParticipanteslista(){
-            ProfesorDAO m=new ProfesorDAO();
-            List<Profesor> profesores=m.listar();
-            DefaultListModel model=new DefaultListModel();
-            listaparti1.setModel(model);
-            for (Profesor pro : profesores) {
-                model.addElement(pro.getId()+".-"+pro.getNombre()+" "+pro.getApellidos());
-            }
-            
-            
+
+    }
+
+    private void cargarParticipanteslista() {
+        ProfesorDAO m = new ProfesorDAO();
+        List<Profesor> profesores = m.listar();
+        DefaultListModel model = new DefaultListModel();
+        listaparti1.setModel(model);
+        for (Profesor pro : profesores) {
+            model.addElement(pro.getId() + ".-" + pro.getNombre() + " " + pro.getApellidos());
         }
-        private void cargarRespolista(){
-            ProfesorDAO m=new ProfesorDAO();
-            List<Profesor> profesores=m.listar();
-            DefaultListModel model=new DefaultListModel();
-            listarespo.setModel(model);
-            for (Profesor pro : profesores) {
-                model.addElement(pro.getId()+".-"+pro.getNombre()+" "+pro.getApellidos());
-            }
-            
-            
+
+    }
+
+    private void cargarRespolista() {
+        ProfesorDAO m = new ProfesorDAO();
+        List<Profesor> profesores = m.listar();
+        DefaultListModel model = new DefaultListModel();
+        listarespo.setModel(model);
+        for (Profesor pro : profesores) {
+            model.addElement(pro.getId() + ".-" + pro.getNombre() + " " + pro.getApellidos());
         }
-         private void cargarGruposlista(){
-            GruposDAO m=new GruposDAO();
-            List<Grupos> grupos=m.listar();
-            DefaultListModel model=new DefaultListModel();
-            listagrupos.setModel(model);
-            for (Grupos grupo : grupos) {
-                model.addElement(grupo.getId()+".-"+grupo.getCodgrupo());
-            }
-            
-            
+
+    }
+
+    private void cargarGruposlista() {
+        GruposDAO m = new GruposDAO();
+        List<Grupos> grupos = m.listar();
+        DefaultListModel model = new DefaultListModel();
+        listagrupos.setModel(model);
+        for (Grupos grupo : grupos) {
+            model.addElement(grupo.getId() + ".-" + grupo.getCodgrupo());
         }
-         private void cargarSolicitado(){
-             SolicitudesDAO s=new SolicitudesDAO();
-             List<Solicitudes> solis=s.listar();
-             DefaultTableModel model=(DefaultTableModel) Solicitudes2.getModel();
-             
-             for (Solicitudes soli : solis) {
-                 String previsto="No";
-                 String medio_transporte="No";
-                 String alojamiento="No";
-                 
-                 if(soli.isPrevisto()){
-                      previsto="Si";
-                 }
-                 if(soli.isMedio_transporte()){
-                     medio_transporte="Si";
-                 }
-                 if(soli.isAlojamiento()){
-                     alojamiento="Si";
-                 }
-                 System.out.println(soli.getId());
-                model.addRow(new Object[]{
+
+    }
+
+    private void cargarSolicitado() {
+        SolicitudesDAO s = new SolicitudesDAO();
+        List<Solicitudes> solis = s.listarporidsolicitante(perfil.getIdprofesor().getId());
+        DefaultTableModel model = (DefaultTableModel) Solicitudes2.getModel();
+        for (Solicitudes soli : solis) {
+            String previsto = "No";
+            String medio_transporte = "No";
+            String alojamiento = "No";
+
+            if (soli.isPrevisto()) {
+                previsto = "Si";
+            }
+            if (soli.isMedio_transporte()) {
+                medio_transporte = "Si";
+            }
+            if (soli.isAlojamiento()) {
+                alojamiento = "Si";
+            }
+            model.addRow(new Object[]{
                 soli.getId(),
                 soli.getTitulo_actividad(),
                 soli.getTipo_actividad(),
@@ -901,29 +994,43 @@ public class Menu extends javax.swing.JFrame {
                 soli.getEstado().name(),
                 soli.getProfesor_solicitante().getId()
             });
-             }
-         }
-        private void cargarCursoslista(){
-            CursosDAO m=new CursosDAO();
-            List<Curso> cursos=m.listar();
-            DefaultListModel model=new DefaultListModel();
-            listacursos.setModel(model);
-            for (Curso curso : cursos) {
-                model.addElement(curso.getId()+".-"+curso.getCodcurso());
-            }
-            
-            
         }
-        
-        private void cargargrupos(){
-        GruposDAO d=new GruposDAO();
+    }
+
+    private void cargarEstado() {
+        SolicitudesDAO s = new SolicitudesDAO();
+        List<Solicitudes> solis = s.listar();
+        DefaultTableModel model = (DefaultTableModel) estado.getModel();
+
+        for (Solicitudes soli : solis) {
+            model.addRow(new Object[]{
+                soli.getId(),
+                soli.getTitulo_actividad(),
+                soli.getEstado().name()
+            });
+        }
+    }
+
+    private void cargarCursoslista() {
+        CursosDAO m = new CursosDAO();
+        List<Curso> cursos = m.listar();
+        DefaultListModel model = new DefaultListModel();
+        listacursos.setModel(model);
+        for (Curso curso : cursos) {
+            model.addElement(curso.getId() + ".-" + curso.getCodcurso());
+        }
+
+    }
+
+    private void cargargrupos() {
+        GruposDAO d = new GruposDAO();
         DefaultTableModel model = (DefaultTableModel) Grupos.getModel();
-        List<Grupos> grupos=d.listar();
+        List<Grupos> grupos = d.listar();
         String activo;
         for (Grupos grupo : grupos) {
-            activo="No";
-            if(grupo.isActivo()){
-                 activo="Si";
+            activo = "No";
+            if (grupo.isActivo()) {
+                activo = "Si";
             }
             model.addRow(new Object[]{
                 grupo.getId(),
@@ -933,17 +1040,18 @@ public class Menu extends javax.swing.JFrame {
                 grupo.getCodgrupo()
             });
         }
-        }
-        private void cargarCursos(){
-        CursosDAO d=new CursosDAO();
+    }
+
+    private void cargarCursos() {
+        CursosDAO d = new CursosDAO();
         DefaultTableModel model = (DefaultTableModel) cursos.getModel();
-            System.out.println("a");
-        List<Curso> cursos=d.listar();
+        
+        List<Curso> cursos = d.listar();
         String activo;
         for (Curso curso : cursos) {
-            activo="No";
-            if(curso.isActivo()){
-                 activo="Si";
+            activo = "No";
+            if (curso.isActivo()) {
+                activo = "Si";
             }
             model.addRow(new Object[]{
                 curso.getId(),
@@ -952,44 +1060,166 @@ public class Menu extends javax.swing.JFrame {
                 curso.getEtapa(),
                 activo
             });
-            }
         }
-        private void cargarProfecombo(){
-            ProfesorDAO m=new ProfesorDAO();
-            List<Profesor> profesores=m.listar();
-            for (Profesor pro : profesores) {
-                solicitante.addItem(String.valueOf(pro.getId())+".-"+pro.getNombre()+" "+pro.getApellidos());
-            }
-            
-            
+    }
+
+    private void cargarProfecombo() {
+        ProfesorDAO m = new ProfesorDAO();
+        List<Profesor> profesores = m.listar();
+        for (Profesor pro : profesores) {
+            solicitante.addItem(String.valueOf(pro.getId()) + ".-" + pro.getNombre() + " " + pro.getApellidos());
         }
-        private void cargarDepartacombo(){
-            DepartamentoDAO1 m=new DepartamentoDAO1();
-            List<Departamento> departamentos=m.listar();
-            for (Departamento departa : departamentos) {
-                solideparta.addItem(String.valueOf(departa.getId())+".-"+departa.getCod_departamento());
-            }
-            
-            
+
+    }
+
+    private void cargarDepartacombo() {
+        DepartamentoDAO1 m = new DepartamentoDAO1();
+        List<Departamento> departamentos = m.listar();
+        for (Departamento departa : departamentos) {
+            solideparta.addItem(String.valueOf(departa.getId()) + ".-" + departa.getCod_departamento());
         }
-        
-        
+
+    }
+
+    private LocalDate convertToLocalDateViaInstant(Date dateToConvert) {
+        return dateToConvert.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+    }
+    public LocalDate fromDateToLocalDate(Date date) {
+    return date.toInstant()
+      .atZone(ZoneId.systemDefault())
+      .toLocalDate();
+}
+
     private void ApagarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ApagarActionPerformed
-     System.exit(0);
+        System.exit(0);
     }//GEN-LAST:event_ApagarActionPerformed
 
     private void csvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_csvActionPerformed
-      csv.getSelectedFile();
+        csv.getSelectedFile();
     }//GEN-LAST:event_csvActionPerformed
 
-    private void crealojActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_crealojActionPerformed
+    private void crealojaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_crealojaActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_crealojActionPerformed
+    }//GEN-LAST:event_crealojaActionPerformed
 
     private void btncreaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btncreaActionPerformed
-   this.creaActividad=creactpre.isSelected();
-   this.creaAloj=crealoj.isSelected();
-   
+        ProfesorDAO p = new ProfesorDAO();
+        DepartamentoDAO1 d = new DepartamentoDAO1();
+        GruposDAO g = new GruposDAO();
+        CursosDAO c = new CursosDAO();
+        MedioTransporteDAO t = new MedioTransporteDAO();
+        String idprofe=(String)solicitante.getSelectedItem();
+        int indexp = idprofe.indexOf(".");
+        Profesor profesolicitante = p.porId(Integer.parseInt(idprofe.substring(0,indexp)));
+        String ideparta=(String)solideparta.getSelectedItem();
+        int indexd = ideparta.indexOf(".");
+        Departamento departa = d.porId(Integer.parseInt(ideparta.substring(0,indexd)));
+        boolean prevista = actividadprevista.isSelected();
+
+        List<String> listatran = transporte.getSelectedValuesList();
+        LinkedList<MedioTransporte> listainttran;
+        listainttran = new LinkedList<MedioTransporte>();
+        boolean transporteb=false;
+        for (String s : listatran) {
+            
+            
+            int index = s.indexOf(".");
+            int idtran = Integer.parseInt(s.substring(0, index));
+            if(idtran>0){
+            transporteb=true;
+            MedioTransporte transpo = t.porId(idtran);
+            listainttran.add(transpo);  
+            }
+            
+        }
+        List<String> listaresp = listarespo.getSelectedValuesList();
+        LinkedList<Profesor> listaintrespo;
+        listaintrespo = new LinkedList<Profesor>();
+        for (String s : listaresp) {
+            int index = s.indexOf(".");
+            int idrespo = Integer.parseInt(s.substring(0, index));
+            Profesor pro = p.porId(idrespo);
+            listaintrespo.add(pro);
+        }
+        List<String> listapart = listaparti1.getSelectedValuesList();
+        LinkedList<Profesor> listaintpart;
+        listaintpart = new LinkedList<Profesor>();
+        for (String s : listapart) {
+            int index = s.indexOf(".");
+            int id = Integer.parseInt(s.substring(0, index));
+            Profesor pro = p.porId(id);
+            listaintrespo.add(pro);
+        }
+        List<String> listagrup = listagrupos.getSelectedValuesList();
+        LinkedList<Grupos> listaintgrup;
+        listaintgrup = new LinkedList<Grupos>();
+        for (String s : listagrup) {
+            int index = s.indexOf(".");
+            int id = Integer.parseInt(s.substring(0, index));
+            Grupos grup = g.porId(id);
+            listaintgrup.add(grup);
+        }
+        List<String> listacurs = listacursos.getSelectedValuesList();
+        LinkedList<Curso> listaintcurs;
+        listaintcurs = new LinkedList<Curso>();
+        for (String s : listacurs) {
+            int index = s.indexOf(".");
+            int id = Integer.parseInt(s.substring(0, index));
+            Curso curs = c.porId(id);
+            listaintcurs.add(curs);
+        }
+        LocalDate fechaini = convertToLocalDateViaInstant(Fechaini.getCalendar().getTime());
+        LocalDate fechafn= convertToLocalDateViaInstant(Fechafin.getCalendar().getTime());
+        LocalTime hini=LocalTime.of(Integer.parseInt(horaini.getText().substring(0, 2)),Integer.parseInt(horaini.getText().substring(3)));
+        LocalTime hifn=LocalTime.of(Integer.parseInt(horafn.getText().substring(0, 2)),Integer.parseInt(horaini.getText().substring(3)));
+        String alu=numAlumnos.getText();
+        boolean aloja = crealoja.isSelected();
+        String nombre=nombresoli.getText();
+        String tipo=tiposoli.getText();
+        String comentario= comentarios.getText();
+        Solicitudes soli=new Solicitudes(0,nombre,tipo,alu,comentario,prevista,transporteb,aloja,fechaini,fechafn,hini,hifn,departa,profesolicitante,Solicitudes.estadosoli.solicitado);
+        SolicitudesDAO s=new SolicitudesDAO();
+        s.guardar(soli);
+        DefaultTableModel model = (DefaultTableModel) Solicitudes2.getModel();
+        
+        s=new SolicitudesDAO();
+        List<Solicitudes> list=s.listar();
+        int idsoli=list.get(list.size()-1).getId();
+        Solicitudes solid=list.get(list.size()-1);
+        String previsto = "No";
+            String medio_transporte = "No";
+            String alojamiento = "No";
+
+            if (solid.isPrevisto()) {
+                previsto = "Si";
+            }
+            if (solid.isMedio_transporte()) {
+                medio_transporte = "Si";
+            }
+            if (solid.isAlojamiento()) {
+                alojamiento = "Si";
+            }
+        model.addRow(new Object[]{
+                solid.getId(),
+                solid.getTitulo_actividad(),
+                solid.getTipo_actividad(),
+                solid.getDepartamento().getId(),
+                previsto,
+                medio_transporte,
+                solid.getFechaini(),
+                solid.getHoraini(),
+                solid.getFechafn(),
+                solid.getHorafn(),
+                solid.getNumeroalumnos(),
+                alojamiento,
+                solid.getComentarios(),
+                solid.getEstado().name(),
+                solid.getProfesor_solicitante().getId()
+        });
+        
+        
     }//GEN-LAST:event_btncreaActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -1006,86 +1236,222 @@ public class Menu extends javax.swing.JFrame {
 
     private void BorrarprofeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BorrarprofeActionPerformed
         int borrar;
-        borrar=Profesores.getSelectedRow();
+        borrar = Profesores.getSelectedRow();
         DefaultTableModel model = (DefaultTableModel) Profesores.getModel();
-        int eliminar=(int)model.getValueAt(borrar, 0);
+        int eliminar = (int) model.getValueAt(borrar, 0);
         model.removeRow(borrar);
-        ProfesorDAO p=new ProfesorDAO();
-        if(borrar>0){
+        ProfesorDAO p = new ProfesorDAO();
+        if (borrar > 0) {
             p.eliminar(eliminar);
         }
-        
+
     }//GEN-LAST:event_BorrarprofeActionPerformed
 
     private void borrargrupoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_borrargrupoActionPerformed
         // TODO add your handling code here:
         int borrar;
-        borrar=Grupos.getSelectedRow();
+        borrar = Grupos.getSelectedRow();
         DefaultTableModel model = (DefaultTableModel) Grupos.getModel();
-        int eliminar=(int)model.getValueAt(borrar, 0);
+        int eliminar = (int) model.getValueAt(borrar, 0);
         model.removeRow(borrar);
-        GruposDAO p=new GruposDAO();
-        if(borrar>0){
+        GruposDAO p = new GruposDAO();
+        if (borrar > 0) {
             p.eliminar(eliminar);
         }
     }//GEN-LAST:event_borrargrupoActionPerformed
 
     private void BorrarcursoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BorrarcursoActionPerformed
         int borrar;
-        borrar=cursos.getSelectedRow();
+        borrar = cursos.getSelectedRow();
         DefaultTableModel model = (DefaultTableModel) cursos.getModel();
-        int eliminar=(int)model.getValueAt(borrar, 0);
+        int eliminar = (int) model.getValueAt(borrar, 0);
         model.removeRow(borrar);
-        CursosDAO p=new CursosDAO();
-        if(borrar>0){
+        CursosDAO p = new CursosDAO();
+        if (borrar > 0) {
             p.eliminar(eliminar);
         }
     }//GEN-LAST:event_BorrarcursoActionPerformed
 
     private void BorrardepaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BorrardepaActionPerformed
         int borrar;
-        borrar=Departamentos.getSelectedRow();
+        borrar = Departamentos.getSelectedRow();
         DefaultTableModel model = (DefaultTableModel) Departamentos.getModel();
-        int eliminar=(int)model.getValueAt(borrar, 0);
+        int eliminar = (int) model.getValueAt(borrar, 0);
         model.removeRow(borrar);
-        DepartamentoDAO1 p=new DepartamentoDAO1();
-        if(borrar>0){
+        DepartamentoDAO1 p = new DepartamentoDAO1();
+        if (borrar > 0) {
             p.eliminar(eliminar);
         }
     }//GEN-LAST:event_BorrardepaActionPerformed
 
     private void aplicarprofeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aplicarprofeActionPerformed
-        int[] borrar=null;
-        borrar=Profesores.getSelectedRows();
+        int[] borrar = null;
+        borrar = Profesores.getSelectedRows();
         DefaultTableModel model = (DefaultTableModel) Profesores.getModel();
-        ProfesorDAO p=new ProfesorDAO();
-        DepartamentoDAO1 d=new DepartamentoDAO1();
-        if(borrar.length>0){
-           
+        ProfesorDAO p = new ProfesorDAO();
+        DepartamentoDAO1 d = new DepartamentoDAO1();
+        if (borrar.length > 0) {
+
             for (int i = 0; i < borrar.length; i++) {
-                
-                
-                int id =(int)model.getValueAt(borrar[i], 0);
-                String nombre =(String)model.getValueAt(borrar[i], 1);
-                String apellidos =(String)model.getValueAt(borrar[i], 2);
-                String dni =(String)model.getValueAt(borrar[i], 3);
-                String correo =(String)model.getValueAt(borrar[i], 4);
-                
-                Departamento departa =d.porId((int)model.getValueAt(borrar[i], 5));  
-                Profesor pro=new Profesor(id,nombre,apellidos,dni,correo,departa);
+
+                int id = (int) model.getValueAt(borrar[i], 0);
+                String nombre = (String) model.getValueAt(borrar[i], 1);
+                String apellidos = (String) model.getValueAt(borrar[i], 2);
+                String dni = (String) model.getValueAt(borrar[i], 3);
+                String correo = (String) model.getValueAt(borrar[i], 4);
+
+                Departamento departa = d.porId((int) model.getValueAt(borrar[i], 5));
+                Profesor pro = new Profesor(id, nombre, apellidos, dni, correo, departa);
                 p.modificar(pro);
-                
-                
-                
-                
+
             }
         }
     }//GEN-LAST:event_aplicarprofeActionPerformed
 
-    
+    private void aplicarsoliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aplicarsoliActionPerformed
+        int[] borrar = null;
+        borrar = Solicitudes2.getSelectedRows();
+        DefaultTableModel model = (DefaultTableModel) Solicitudes2.getModel();
+        SolicitudesDAO p = new SolicitudesDAO();
+        DepartamentoDAO1 d = new DepartamentoDAO1();
+        ProfesorDAO pro = new ProfesorDAO();
+        if (borrar.length > 0) {
+
+            for (int i = 0; i < borrar.length; i++) {
+                int id = (int) model.getValueAt(borrar[i], 0);
+                
+                String titulo = (String) model.getValueAt(borrar[i], 1);
+                
+                String tipo = (String) model.getValueAt(borrar[i], 2);
+                
+                Departamento depa = d.porId((int) model.getValueAt(borrar[i], 3));
+                
+                String previsto = (String) model.getValueAt(borrar[i], 4);
+                
+                String transportes = (String) model.getValueAt(borrar[i], 5);
+                
+                LocalDate fechaini = (LocalDate) model.getValueAt(borrar[i], 6);
+                LocalTime horainicio = (LocalTime) model.getValueAt(borrar[i], 7);
+                LocalDate fechafn = (LocalDate) model.getValueAt(borrar[i], 8);
+                LocalTime horafinal = (LocalTime) model.getValueAt(borrar[i], 9);
+                String numalu = (String) model.getValueAt(borrar[i], 10);
+                String alojamiento = (String) model.getValueAt(borrar[i], 11);
+                String comentarios = (String) model.getValueAt(borrar[i], 12);
+                String estados = (String) model.getValueAt(borrar[i], 13);
+                Profesor profe = pro.porId((int) model.getValueAt(borrar[i], 14));
+                boolean aloja = false;
+                boolean previs = false;
+                boolean transpo = false;
+                if (alojamiento.toLowerCase().equals("si")) {
+                    aloja = true;
+                }
+                if (previsto.toLowerCase().equals("si")) {
+                    previs = true;
+                }
+                if (transportes.toLowerCase().equals("si")) {
+                    transpo = true;
+                }
+                Solicitudes.estadosoli est = Solicitudes.estadosoli.valueOf(estados.toLowerCase());
+                Solicitudes soli = new Solicitudes(id, titulo, tipo, numalu, comentarios, previs, transpo, aloja, fechaini, fechafn, horainicio, horafinal, depa, profe, est);
+
+                p.modificar(soli);
+            }
+        }
+    }//GEN-LAST:event_aplicarsoliActionPerformed
+
+    private void solicitanteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_solicitanteActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_solicitanteActionPerformed
+
+    private void tiposoliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tiposoliActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tiposoliActionPerformed
+
+    private void AplicarestadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AplicarestadoActionPerformed
+        int[] borrar = null;
+        borrar = estado.getSelectedRows();
+        DefaultTableModel model = (DefaultTableModel) estado.getModel();
+        SolicitudesDAO s=new SolicitudesDAO();
+        for (int i = 0; i < borrar.length; i++) {
+            int id = (int) model.getValueAt(borrar[i], 0);
+            String titulo = (String) model.getValueAt(borrar[i], 1);
+            String estados = (String) model.getValueAt(borrar[i], 2);
+            Solicitudes soli = new Solicitudes(id,titulo,Solicitudes.estadosoli.valueOf(estados));
+            s.modificarestado(soli);
+            
+        }
+    }//GEN-LAST:event_AplicarestadoActionPerformed
+
+    private void aplicagruposActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aplicagruposActionPerformed
+        int[] borrar = null;
+        borrar = Grupos.getSelectedRows();
+        DefaultTableModel model = (DefaultTableModel) Grupos.getModel();
+        GruposDAO g =new GruposDAO();
+        CursosDAO c=new CursosDAO();
+        for (int i = 0; i < borrar.length; i++) {
+            int id = (int) model.getValueAt(borrar[i], 0);
+            Curso curs=c.porId((int)model.getValueAt(borrar[i], 1));
+            int numalu=Integer.parseInt((String)model.getValueAt(borrar[i], 2));
+            String activo=(String)model.getValueAt(borrar[i], 3);
+            boolean act=false;
+            if (activo.equalsIgnoreCase("si")) {
+                act=true;
+            }
+            String codgrupo=(String)model.getValueAt(borrar[i], 4);
+            Grupos grup=new Grupos(id,curs,numalu,act,codgrupo);
+            g.modificar(grup);
+            
+        }
+    }//GEN-LAST:event_aplicagruposActionPerformed
+
+    private void aplicardepaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aplicardepaActionPerformed
+        int[] borrar = null;
+        borrar = Departamentos.getSelectedRows();
+        DefaultTableModel model = (DefaultTableModel) Departamentos.getModel();
+        DepartamentoDAO1 d =new DepartamentoDAO1();
+        ProfesorDAO p=new ProfesorDAO();
+        for (int i = 0; i < borrar.length; i++) {
+            int id = (int) model.getValueAt(borrar[i], 0);
+            String codigo = (String) model.getValueAt(borrar[i], 1);
+            String nombre = (String) model.getValueAt(borrar[i], 2);
+            Departamento depart;
+            if(model.getValueAt(borrar[i], 3)==null){
+            depart=new Departamento(id,codigo,nombre);
+            } else {
+            Profesor jefe = p.porId(Integer.parseInt((String) model.getValueAt(borrar[i], 3)));
+            depart=new Departamento(id,codigo,nombre,jefe);
+            }
+            
+            d.modificar(depart);
+            
+        }        
+    }//GEN-LAST:event_aplicardepaActionPerformed
+
+    private void aplicacursosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aplicacursosActionPerformed
+        int[] borrar = null;
+        borrar = cursos.getSelectedRows();
+        DefaultTableModel model = (DefaultTableModel) cursos.getModel();
+        CursosDAO c=new CursosDAO();
+        for (int i = 0; i < borrar.length; i++) {
+            int id = (int) model.getValueAt(borrar[i], 0);
+            String codigo = (String) model.getValueAt(borrar[i], 1);
+            String descr = (String) model.getValueAt(borrar[i], 2);
+            String etapa = (String) model.getValueAt(borrar[i], 3);
+            String activo = (String) model.getValueAt(borrar[i], 4);
+            boolean act=false;
+            if (activo.equalsIgnoreCase("si")) {
+                act=true;
+            }
+            Curso curso=new Curso(codigo,descr,etapa,act,id);
+            c.modificar(curso);
+            
+        } 
+    }//GEN-LAST:event_aplicacursosActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Apagar;
+    private javax.swing.JButton Aplicarestado;
     private javax.swing.JButton Borrarcurso;
     private javax.swing.JButton Borrardepa;
     private javax.swing.JButton Borrarprofe;
@@ -1094,20 +1460,21 @@ public class Menu extends javax.swing.JFrame {
     private com.toedter.calendar.JCalendar Fechaini;
     private javax.swing.JTable Grupos;
     private javax.swing.JTable Profesores;
-    private javax.swing.JScrollPane Solicitudes;
     private javax.swing.JTable Solicitudes2;
+    private javax.swing.JScrollPane Solicitudesscroll;
+    private javax.swing.JCheckBox actividadprevista;
     private javax.swing.JLabel aloj;
     private javax.swing.JButton aplicacursos;
     private javax.swing.JButton aplicagrupos;
     private javax.swing.JButton aplicardepa;
     private javax.swing.JButton aplicarprofe;
+    private javax.swing.JButton aplicarsoli;
     private javax.swing.JButton borrargrupo;
     private javax.swing.JButton btncrea;
     private javax.swing.JLabel comen;
+    private javax.swing.JTextArea comentarios;
     private javax.swing.JLabel creact;
-    private javax.swing.JCheckBox creactpre;
-    private javax.swing.JCheckBox crealoj;
-    private javax.swing.JTextArea crecomen;
+    private javax.swing.JCheckBox crealoja;
     private javax.swing.JFileChooser csv;
     private javax.swing.JTable cursos;
     private javax.swing.JLabel dept;
@@ -1123,6 +1490,8 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JPanel jPanel1;
@@ -1158,12 +1527,14 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JScrollPane listaparti;
     private javax.swing.JList<String> listaparti1;
     private javax.swing.JList<String> listarespo;
+    private javax.swing.JTextField nombresoli;
     private javax.swing.JTextField numAlumnos;
     private javax.swing.JLabel profpar;
     private javax.swing.JLabel profres;
     private javax.swing.JLabel profsol;
     private javax.swing.JComboBox<String> solicitante;
     private javax.swing.JComboBox<String> solideparta;
+    private javax.swing.JTextField tiposoli;
     private javax.swing.JLabel trans;
     private javax.swing.JList<String> transporte;
     // End of variables declaration//GEN-END:variables

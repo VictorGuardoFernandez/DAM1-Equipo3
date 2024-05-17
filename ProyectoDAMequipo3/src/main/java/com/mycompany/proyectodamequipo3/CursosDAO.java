@@ -47,7 +47,7 @@ public class CursosDAO implements Repositorio<Curso> {
     @Override
     public Curso porId(int id) {
         Curso curso = null;
-        String sql = "SELECT idcurso,codcurso,desc_curso,etapa,activo FROM cursos WHERE id=?";
+        String sql = "SELECT idcurso,codcurso,desc_curso,etapa,activo FROM cursos WHERE idcurso=?";
         try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery();) {

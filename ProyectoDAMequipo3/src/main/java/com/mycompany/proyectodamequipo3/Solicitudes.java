@@ -50,6 +50,31 @@ public class Solicitudes {
         this.transporte = transporte;
         this.responsables=responsables;
     }
+
+    public Solicitudes(int id,String titulo_actividad, String tipo_actividad, String numeroalumnos, String comentarios, boolean previsto, boolean medio_transporte, boolean alojamiento, LocalDate fechaini, LocalDate fechafn, LocalTime horaini, LocalTime horafn, Departamento departamento, Profesor profesor_solicitante, estadosoli estado) {
+        this.titulo_actividad = titulo_actividad;
+        this.tipo_actividad = tipo_actividad;
+        this.numeroalumnos = numeroalumnos;
+        this.comentarios = comentarios;
+        this.previsto = previsto;
+        this.medio_transporte = medio_transporte;
+        this.alojamiento = alojamiento;
+        this.fechaini = fechaini;
+        this.fechafn = fechafn;
+        this.horaini = horaini;
+        this.horafn = horafn;
+        this.id = id;
+        this.departamento = departamento;
+        this.profesor_solicitante = profesor_solicitante;
+        this.estado = estado;
+    }
+
+    public Solicitudes(int id,String titulo_actividad, estadosoli estado) {
+        this.id=id;
+        this.titulo_actividad = titulo_actividad;
+        this.estado = estado;
+    }
+    
     
 
     public String getTitulo_actividad() {

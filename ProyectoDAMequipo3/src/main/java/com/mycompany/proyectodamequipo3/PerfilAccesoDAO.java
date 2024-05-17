@@ -23,7 +23,7 @@ public class PerfilAccesoDAO implements Repositorio<PerfilAcceso> {
     @Override
     public List<PerfilAcceso> listar() {
         List<PerfilAcceso> perfiles = new ArrayList<>();
-        try (Statement stmt = getConnection().createStatement(); ResultSet rs = stmt.executeQuery("SELECT id, nombre, apellidos FROM perfiles_acceso");) {
+        try (Statement stmt = getConnection().createStatement(); ResultSet rs = stmt.executeQuery("SELECT idprofesor,tipo, correo, password FROM perfil_acceso");) {
             while (rs.next()) {
                 PerfilAcceso perfil = crearPerfil(rs);
                 if (!perfiles.add(perfil)) {
@@ -43,7 +43,7 @@ public class PerfilAccesoDAO implements Repositorio<PerfilAcceso> {
     @Override
     public PerfilAcceso porId(int id) {
         PerfilAcceso perfil = null;
-        String sql = "SELECT idprofesor,tipo,correo,password,nombre,apellidos,dni,correo,departamento FROM perfil_acceso inner join profesores on idprofesor=idprofesores WHERE idprofesor=?";
+        String sql = "SELECT idprofesor,tipo,perfil_acceso.correo,password,nombre,apellidos,dni,departamento FROM perfil_acceso inner join profesores on idprofesor=idprofesores WHERE idprofesor=?";
         try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery();) {
@@ -129,5 +129,23 @@ public class PerfilAccesoDAO implements Repositorio<PerfilAcceso> {
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
+    }
+    public String devolverpassword(String passw){
+        PerfilAcceso perfil = null;
+        String sql = "SELECT md5(?) as pass";
+        String password=null;
+        try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
+            stmt.setString(1, passw);
+            try (ResultSet rs = stmt.executeQuery();) {
+                if (rs.next()) {
+                    password=rs.getString("pass");
+                }
+            }
+
+        } catch (SQLException ex) {
+            // errores
+            System.out.println("SQLException: " + ex.getMessage());
+        }
+        return password;
     }
 }

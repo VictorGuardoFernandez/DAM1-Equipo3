@@ -16,10 +16,10 @@ public class AccesoBaseDatos {
 
     private Connection conn = null; //atributo conexión
     // constantes a definir
-    private static final String BD = "ACEX_DAM1_Equipo3";
+    private static final String BD = "acex_dam1_equipo3";
     private static final String USUARIO = "root";
-    private static final String CLAVE = "adminG3";
-    private static final String URL = "jdbc:mysql://10.0.16.34:3306/" + BD;
+    private static final String CLAVE = "bufon317";
+    private static final String URL = "jdbc:mysql://127.0.0.1:3306/" + BD;
 
     private AccesoBaseDatos() {
 

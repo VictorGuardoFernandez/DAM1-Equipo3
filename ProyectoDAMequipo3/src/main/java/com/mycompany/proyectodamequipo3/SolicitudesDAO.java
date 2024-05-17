@@ -42,6 +42,25 @@ public class SolicitudesDAO implements Repositorio<Solicitudes> {
         }
         return solicitudes;
     }
+   
+    public List<Solicitudes> listarporidsolicitante(int id) {
+        List<Solicitudes> solicitudes = new ArrayList<>();
+        try (Statement stmt = getConnection().createStatement(); ResultSet rs = stmt.executeQuery("SELECT idsolicitud,tipo_actividad,titulo_actividad,departamento,previsto,medio_transporte,fechaini,horaini,fechafn,horafn,numeroalumnos,alojamiento,comentarios,estado,idprofesores_solicitante FROM solicitudes where idprofesores_solicitante= "+id);) {
+            while (rs.next()) {
+                Solicitudes solicitud = crearSolicitud(rs);
+                if (!solicitudes.add(solicitud)) {
+                    throw new Exception("error no se ha insertado el objeto en la colección");
+                }
+            }
+
+        } catch (SQLException ex) {
+            // errores
+            System.out.println("SQLException: " + ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        return solicitudes;
+    }
 
     @Override
     public Solicitudes porId(int id) {
@@ -121,7 +140,7 @@ public class SolicitudesDAO implements Repositorio<Solicitudes> {
     }
     public void guardarlistaprofrer(LinkedList<Profesor> profes, int id){
         for (Profesor profe : profes) {
-            String sql = "INSERT INTO profesor_responsable (idsolicitud,idprofesores) values(?,?)";
+            String sql = "INSERT INTO profesor_respo (idsolicitud,idprofesores) values(?,?)";
              try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
 
             stmt.setInt(1,id);
@@ -255,7 +274,7 @@ public class SolicitudesDAO implements Repositorio<Solicitudes> {
         ProfesorDAO p=new ProfesorDAO();
         
         LinkedList<Profesor> profesores = new LinkedList<>();
-        String sql = "SELECT id,idprofesores from profesor_responsable where idsolicitud=? ";
+        String sql = "SELECT id,idprofesores from profesor_respo where idsolicitud=? ";
         try ( PreparedStatement stmt = getConnection().prepareStatement(sql);) {
             stmt.setInt(1, idsoli);
             try ( ResultSet rs = stmt.executeQuery();) {
@@ -346,6 +365,61 @@ public class SolicitudesDAO implements Repositorio<Solicitudes> {
 
     @Override
     public void modificar(Solicitudes t) {
-        
+         String sql = null;
+       
+            
+            sql="update solicitudes set tipo_actividad=?, titulo_actividad=?, departamento=?, previsto=?, medio_transporte=?, fechaini=?, horaini=?, fechafn=?, horafn=?, numeroalumnos=?, alojamiento=?, comentarios=?, estado=?, idprofesores_solicitante=?  where idsolicitud=?";
+        try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
+
+            stmt.setString(1, t.getTipo_actividad());
+            stmt.setString(2, t.getTitulo_actividad());
+            stmt.setInt(3, t.getDepartamento().getId());
+            stmt.setBoolean(4,t.isPrevisto());
+            stmt.setBoolean(5, t.isMedio_transporte());
+            stmt.setDate(6, Date.valueOf(t.getFechaini()));
+            stmt.setTime(7, Time.valueOf(t.getHoraini()));
+            stmt.setDate(8, Date.valueOf(t.getFechafn()));
+            stmt.setTime(9, Time.valueOf(t.getHorafn()));
+            stmt.setInt(10, Integer.parseInt(t.getNumeroalumnos()));
+            stmt.setBoolean(11, t.isAlojamiento());
+            stmt.setString(12, t.getComentarios());
+            stmt.setString(13, t.getEstado().name());
+            stmt.setInt(14, t.getProfesor_solicitante().getId());
+            stmt.setInt(15, t.getId());
+            
+            int salida = stmt.executeUpdate();
+            if (salida != 1) {
+                throw new Exception(" No se ha modificado un solo registro");
+            }
+
+        } catch (SQLException ex) {
+            // errores
+            System.out.println("SQLException: " + ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+    public void modificarestado(Solicitudes t) {
+         String sql = null;
+       
+            
+            sql="update solicitudes set estado=? where idsolicitud=?";
+        try (PreparedStatement stmt = getConnection().prepareStatement(sql);) {
+
+            
+            stmt.setString(1, t.getEstado().name());
+            stmt.setInt(2, t.getId());
+            
+            int salida = stmt.executeUpdate();
+            if (salida != 1) {
+                throw new Exception(" No se ha modificado un solo registro");
+            }
+
+        } catch (SQLException ex) {
+            // errores
+            System.out.println("SQLException: " + ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
     }
 }
