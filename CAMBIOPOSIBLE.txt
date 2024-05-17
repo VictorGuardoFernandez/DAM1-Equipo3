@@ -1,0 +1,1 @@
+"SELECT idDepartamentos,cod_departamento,nom_departamento,nvl(idjefe_departamento,0)as idjefe_departamento,nombre,apellidos,dni,correo FROM departamentos left join profesores on idjefe_departamento=idprofesores"
