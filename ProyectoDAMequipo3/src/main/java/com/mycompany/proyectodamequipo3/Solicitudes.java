@@ -6,6 +6,7 @@ package com.mycompany.proyectodamequipo3;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.LinkedList;
 
 /**
  *
@@ -16,9 +17,18 @@ public class Solicitudes {
     private boolean previsto,medio_transporte,alojamiento;
     private LocalDate fechaini,fechafn;
     private LocalTime horaini,horafn;
-    private int departamento,profesor_solicitante;
+    private int id;
+    private Departamento departamento;
+    private Profesor profesor_solicitante;
+    public enum estadosoli{solicitado,aprobado,denegado,realizado};
+    private estadosoli estado;
+    private LinkedList<Profesor> participantes;
+    private LinkedList<Grupos> grupos;
+    private LinkedList<Curso> cursos;
+    private LinkedList<MedioTransporte> transporte;
+    private LinkedList<Profesor>responsables;
 
-    public Solicitudes(String titulo_actividad, String tipo_actividad, String numeroalumnos, String comentarios, boolean previsto, boolean medio_transporte, boolean alojamiento, LocalDate fechaini, LocalDate fechafn, LocalTime horaini, LocalTime horafn, int departamento, int profesor_solicitante) {
+    public Solicitudes(int id,String titulo_actividad, String tipo_actividad, String numeroalumnos, String comentarios, boolean previsto, boolean medio_transporte, boolean alojamiento, LocalDate fechaini, LocalDate fechafn, LocalTime horaini, LocalTime horafn, Departamento departamento, Profesor profesor_solicitante, estadosoli estado, LinkedList<Profesor> participantes,LinkedList<Profesor> responsables, LinkedList<Grupos> grupos, LinkedList<Curso> cursos, LinkedList<MedioTransporte> transporte) {
         this.titulo_actividad = titulo_actividad;
         this.tipo_actividad = tipo_actividad;
         this.numeroalumnos = numeroalumnos;
@@ -30,9 +40,42 @@ public class Solicitudes {
         this.fechafn = fechafn;
         this.horaini = horaini;
         this.horafn = horafn;
+        this.id = id;
         this.departamento = departamento;
         this.profesor_solicitante = profesor_solicitante;
+        this.estado = estado;
+        this.participantes = participantes;
+        this.grupos = grupos;
+        this.cursos = cursos;
+        this.transporte = transporte;
+        this.responsables=responsables;
     }
+
+    public Solicitudes(int id,String titulo_actividad, String tipo_actividad, String numeroalumnos, String comentarios, boolean previsto, boolean medio_transporte, boolean alojamiento, LocalDate fechaini, LocalDate fechafn, LocalTime horaini, LocalTime horafn, Departamento departamento, Profesor profesor_solicitante, estadosoli estado) {
+        this.titulo_actividad = titulo_actividad;
+        this.tipo_actividad = tipo_actividad;
+        this.numeroalumnos = numeroalumnos;
+        this.comentarios = comentarios;
+        this.previsto = previsto;
+        this.medio_transporte = medio_transporte;
+        this.alojamiento = alojamiento;
+        this.fechaini = fechaini;
+        this.fechafn = fechafn;
+        this.horaini = horaini;
+        this.horafn = horafn;
+        this.id = id;
+        this.departamento = departamento;
+        this.profesor_solicitante = profesor_solicitante;
+        this.estado = estado;
+    }
+
+    public Solicitudes(int id,String titulo_actividad, estadosoli estado) {
+        this.id=id;
+        this.titulo_actividad = titulo_actividad;
+        this.estado = estado;
+    }
+    
+    
 
     public String getTitulo_actividad() {
         return titulo_actividad;
@@ -68,6 +111,10 @@ public class Solicitudes {
 
     public boolean isPrevisto() {
         return previsto;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public void setPrevisto(boolean previsto) {
@@ -122,22 +169,38 @@ public class Solicitudes {
         this.horafn = horafn;
     }
 
-    public int getDepartamento() {
+    public Departamento getDepartamento() {
         return departamento;
     }
 
-    public void setDepartamento(int departamento) {
-        this.departamento = departamento;
-    }
-
-    public int getProfesor_solicitante() {
+    public Profesor getProfesor_solicitante() {
         return profesor_solicitante;
     }
 
-    public void setProfesor_solicitante(int profesor_solicitante) {
-        this.profesor_solicitante = profesor_solicitante;
+    public estadosoli getEstado() {
+        return estado;
     }
 
+    public LinkedList<Profesor> getParticipantes() {
+        return participantes;
+    }
+
+    public LinkedList<Grupos> getGrupos() {
+        return grupos;
+    }
+
+    public LinkedList<Curso> getCursos() {
+        return cursos;
+    }
+
+    public LinkedList<MedioTransporte> getTransporte() {
+        return transporte;
+    }
+
+    public LinkedList<Profesor> getResponsables() {
+        return responsables;
+    }
+    
     @Override
     public String toString() {
         return "Solicitudes{" + "titulo_actividad=" + titulo_actividad + ", tipo_actividad=" + tipo_actividad + ", numeroalumnos=" + numeroalumnos + ", comentarios=" + comentarios + ", previsto=" + previsto + ", medio_transporte=" + medio_transporte + ", alojamiento=" + alojamiento + ", fechaini=" + fechaini + ", fechafn=" + fechafn + ", horaini=" + horaini + ", horafn=" + horafn + ", departamento=" + departamento + ", profesor_solicitante=" + profesor_solicitante + '}';

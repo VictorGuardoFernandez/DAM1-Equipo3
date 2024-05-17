@@ -9,13 +9,24 @@ package com.mycompany.proyectodamequipo3;
  * @author DAM128
  */
 public class Departamento {
+    private int id;
     private String cod_departamento,nom_departamento;
-    private int idjefe;
+    private Profesor idjefe;
 
-    public Departamento(String cod_departamento, String nom_departamento, int idjefe) {
+    public Departamento(int id,String cod_departamento, String nom_departamento, Profesor idjefe) {
+        this.id=id;
         this.cod_departamento = cod_departamento;
         this.nom_departamento = nom_departamento;
         this.idjefe = idjefe;
+    }
+    public Departamento(int id,String cod_departamento, String nom_departamento) {
+        this.id=id;
+        this.cod_departamento = cod_departamento;
+        this.nom_departamento = nom_departamento;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getCod_departamento() {
@@ -34,11 +45,11 @@ public class Departamento {
         this.nom_departamento = nom_departamento;
     }
 
-    public int getIdjefe() {
+    public Profesor getIdjefe() {
         return idjefe;
     }
 
-    public void setIdjefe(int idjefe) {
+    public void setIdjefe(Profesor idjefe) {
         this.idjefe = idjefe;
     }
 

@@ -10,14 +10,16 @@ package com.mycompany.proyectodamequipo3;
  * @author DAM128
  */
 public class Curso {
+    private int id;
     private String codcurso,desc_curso,etapa;
     private boolean activo;
 
-    public Curso(String codcurso, String desc_curso, String etapa, boolean activo) {
+    public Curso(String codcurso, String desc_curso, String etapa, boolean activo,int id) {
         this.codcurso = codcurso;
         this.desc_curso = desc_curso;
         this.etapa = etapa;
         this.activo = activo;
+        this.id=id;
     }
 
     public String getCodcurso() {
@@ -50,6 +52,10 @@ public class Curso {
 
     public void setActivo(boolean activo) {
         this.activo = activo;
+    }
+
+    public int getId() {
+        return id;
     }
 
     @Override

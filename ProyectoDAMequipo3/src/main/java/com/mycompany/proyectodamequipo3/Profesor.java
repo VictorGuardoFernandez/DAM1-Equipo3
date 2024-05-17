@@ -9,23 +9,45 @@ package com.mycompany.proyectodamequipo3;
  * @author DAM128
  */
 public class Profesor {
-    private String nombre_apellidos,dni,correo;
-    private int departamento;
+    private String nombre,apellidos,dni,correo;
+    private int id;
+    private Departamento departamento;
 
-    public Profesor(String nombre_apellidos, String dni, String correo, int departamento) {
-        this.nombre_apellidos = nombre_apellidos;
+    public Profesor(int id,String nombre,String apellidos, String dni, String correo, Departamento departamento) {
+        this.id=id;
+        this.nombre=nombre;
+        this.apellidos = apellidos;
         this.dni = dni;
         this.correo = correo;
         this.departamento = departamento;
+        
     }
 
-    public String getNombre_apellidos() {
-        return nombre_apellidos;
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setNombre_apellidos(String nombre_apellidos) {
-        this.nombre_apellidos = nombre_apellidos;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
+
+    public String getApellidos() {
+        return apellidos;
+    }
+
+    public void setApellidos(String apellidos) {
+        this.apellidos = apellidos;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setDepartamento(Departamento departamento) {
+        this.departamento = departamento;
+    }
+
+    
 
     public String getDni() {
         return dni;
@@ -43,17 +65,17 @@ public class Profesor {
         this.correo = correo;
     }
 
-    public int getDepartamento() {
+    public Departamento getDepartamento() {
         return departamento;
     }
 
-    public void setDepartamento(int departamento) {
-        this.departamento = departamento;
-    }
+    
 
     @Override
     public String toString() {
-        return "Profesor{" + "nombre_apellidos=" + nombre_apellidos + ", dni=" + dni + ", correo=" + correo + ", departamento=" + departamento + '}';
+        return "Profesor{" + "nombre=" + nombre + ", apellidos=" + apellidos + ", dni=" + dni + ", correo=" + correo + ", departamento=" + departamento + '}';
     }
+
+    
     
 }

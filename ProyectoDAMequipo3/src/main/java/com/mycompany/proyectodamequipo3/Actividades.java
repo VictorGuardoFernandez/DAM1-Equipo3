@@ -6,19 +6,27 @@ package com.mycompany.proyectodamequipo3;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.LinkedList;
 
 /**
  *
  * @author DAM128
  */
 public class Actividades {
-     private String titulo_actividad,tipo_actividad,numeroalumnos,comentarios;
+    private String titulo_actividad,tipo_actividad,numeroalumnos,comentarios;
     private boolean previsto,medio_transporte,alojamiento;
     private LocalDate fechaini,fechafn;
     private LocalTime horaini,horafn;
-    private int departamento;
+    private int id;
+    private Departamento departamento;
+    private Solicitudes solicitud;
+    private LinkedList<Profesor> participantes;
+    private LinkedList<Grupos> grupos;
+    private LinkedList<Curso> cursos;
+    private LinkedList<MedioTransporte> transporte;
+    private LinkedList<Profesor> responsables;
 
-    public Actividades(String titulo_actividad, String tipo_actividad, String numeroalumnos, String comentarios, boolean previsto, boolean medio_transporte, boolean alojamiento, LocalDate fechaini, LocalDate fechafn, LocalTime horaini, LocalTime horafn, int departamento) {
+    public Actividades(int id,String titulo_actividad, String tipo_actividad, String numeroalumnos, String comentarios, boolean previsto, boolean medio_transporte, boolean alojamiento, LocalDate fechaini, LocalDate fechafn, LocalTime horaini, LocalTime horafn, Departamento departamento, Solicitudes solicitud, LinkedList<Profesor> participantes, LinkedList<Grupos> grupos, LinkedList<Curso> cursos, LinkedList<MedioTransporte> transporte, LinkedList<Profesor> responsables) {
         this.titulo_actividad = titulo_actividad;
         this.tipo_actividad = tipo_actividad;
         this.numeroalumnos = numeroalumnos;
@@ -30,9 +38,16 @@ public class Actividades {
         this.fechafn = fechafn;
         this.horaini = horaini;
         this.horafn = horafn;
+        this.id = id;
         this.departamento = departamento;
+        this.solicitud = solicitud;
+        this.participantes = participantes;
+        this.grupos = grupos;
+        this.cursos = cursos;
+        this.transporte = transporte;
+        this.responsables = responsables;
     }
-
+   
     public String getTitulo_actividad() {
         return titulo_actividad;
     }
@@ -121,13 +136,19 @@ public class Actividades {
         this.horafn = horafn;
     }
 
-    public int getDepartamento() {
+    public int getId() {
+        return id;
+    }
+
+    public Departamento getDepartamento() {
         return departamento;
     }
 
-    public void setDepartamento(int departamento) {
-        this.departamento = departamento;
+    public Solicitudes getSolicitud() {
+        return solicitud;
     }
+
+    
 
     @Override
     public String toString() {
